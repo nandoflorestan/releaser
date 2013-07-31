@@ -42,31 +42,12 @@ class EnsureGitClean(ReleaseStep):
                 'There are uncommitted changes in tracked files.')
 
 
-class GitTag(ReleaseStep):
-    '''Tags the current git commit with the new version number.'''
-    COMMAND = 'git tag -a v{0} -m "Version {0}"'
-    ERROR_CODE = 53
-
-    def __call__(self):
-        version = self.releaser.the_version
-        if version is None:
-            print('Skipping the GitTag step. It can only run AFTER some other '
-                'step sets *the_version* on the releaser.')
-            return
-        retcode, text = system(self.COMMAND.format(version))
-        if retcode != 0:
-            print('The GitTag step failed with the following message:')
-            print(text)
-            print('Continuing anyway.')
-
-    def rollback(self):
-        retcode, text = system_or_stop('git tag -d "v{0}"'.format(
-            self.releaser.the_version))
-
-
 class GitCommitVersionNumber(ReleaseStep):
+    '''Creates a git commit with only one alteration: the new version number.
+    Can rollback().
+    '''
     COMMAND = 'git commit -a -m "{0}"'
-    ERROR_CODE = 54
+    ERROR_CODE = 53
 
     def __init__(self, which='the_version', msg="Version {0}",
                  stop_on_failure=True):
@@ -88,3 +69,51 @@ class GitCommitVersionNumber(ReleaseStep):
 
     def rollback(self):
         retcode, text = system_or_stop('git reset --hard HEAD^')
+
+
+class GitTag(ReleaseStep):
+    '''Tags the current git commit with the new version number. Can rollback().
+    '''
+    COMMAND = 'git tag -a v{0} -m "Version {0}"'
+    ERROR_CODE = 54
+
+    def __call__(self):
+        version = self.releaser.the_version
+        if version is None:
+            print('Skipping the GitTag step. It can only run AFTER some other '
+                'step sets *the_version* on the releaser.')
+            return
+        retcode, text = system(self.COMMAND.format(version))
+        if retcode == 0:
+            self.releaser.created_tags.append(version)
+        else:
+            print('The GitTag step failed with the following message:')
+            print(text)
+            print('Continuing anyway.')
+
+    def rollback(self):
+        retcode, text = system_or_stop('git tag -d "v{0}"'.format(
+            self.releaser.the_version))
+
+
+class GitPushTags(ReleaseStep):
+    '''Pushes local tags to the remote repository. Can rollback().'''
+    COMMAND = 'git push --tags'
+    ERROR_CODE = 55
+    _success = False
+
+    def __call__(self):
+        retcode, text = system(self.COMMAND)
+        if retcode == 0:
+            self._success = True
+        else:
+            print('The GitPushTags step failed with the following message:')
+            print(text)
+            print('Continuing anyway.')
+
+    def rollback(self):
+        if not self._success:
+            return
+        for tag in self.releaser.created_tags:
+            retcode, text = system_or_stop(
+                'git push --delete origin "v{0}"'.format(tag))

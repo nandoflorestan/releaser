@@ -82,6 +82,7 @@ class Releaser(object):
         self.config = config
         # First, convert steps provided by the user into real instances
         self.instances = []
+        self.created_tags = []
         for step in steps:
             if isinstance(step, type):
                 step = step()  # Instantiate the ReleaseStep subclass

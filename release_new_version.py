@@ -8,15 +8,15 @@ from __future__ import (absolute_import, division, print_function,
 from release import Releaser  # https://pypi.python.org/pypi/release
 from release.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
-from release.git_steps import (EnsureGitClean, EnsureGitBranch, GitTag,
-    GitCommitVersionNumber)
+from release.git_steps import (EnsureGitClean, EnsureGitBranch,
+    GitCommitVersionNumber, GitTag, GitPushTags)
 
 # This config information is used by multiple release steps below.
 config = dict(
     github_user='nandoflorestan',  # TODO infer from .git/config
     github_repository='release',
     branch='master',  # Only release new versions in this git branch
-    changes_file=None,
+    changes_file='CHANGES.rst',
     version_file='setup.py',  # Read and write version number on this file
 )
 
@@ -33,14 +33,14 @@ Releaser(config,
     # TODO IMPLEMENT Check CHANGES file for the current milestone
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
     CheckTravis,  # We run this late, so Travis has more time to build
-    # ========== All checks done. Let's do this! ==========
+    # ========== All checks pass. Let's do this! ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
     Shell('python setup.py register sdist upload'),  # http://pypi.python.org
     GitCommitVersionNumber,
-    GitTag,  # Tag the current commit with the new version number
+    GitTag,  # Locally tag the current commit with the new version number
     SetFutureVersion,  # Write incremented version, now with 'dev' suffix
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
+    # git push is the ONLY thing that absolutely cannot be undone:
     Shell('git push', stop_on_failure=False),
-    Shell('git push --tags', stop_on_failure=False),
-    # TODO IMPLEMENT rollback with: git push --delete origin tagname
+    GitPushTags,
 ).release()
