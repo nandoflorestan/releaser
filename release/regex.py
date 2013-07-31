@@ -66,5 +66,8 @@ def version_in_python_source_file(path, replace=None, encoding='utf-8'):
     if replace:
         with codecs.open(path, 'w', encoding=encoding) as stream:
             stream.write(ret)
+        # Test the change we just did by reading the file we just wrote
+        assert replace == version_in_python_source_file(
+            path, encoding=encoding)
     else:
         return ret

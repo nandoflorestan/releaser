@@ -35,10 +35,9 @@ Releaser(config,
     CheckTravis,  # We run this late, so Travis has more time to build
     # ========== All checks done. Let's do this! ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
-    # TODO setup.py egg_info and ensure the new version number is there
     Shell('python setup.py register sdist upload'),  # http://pypi.python.org
     GitCommitVersionNumber,
-    GitTag,  # Tag the current commit with the new version #
+    GitTag,  # Tag the current commit with the new version number
     SetFutureVersion,  # Write incremented version, now with 'dev' suffix
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
     Shell('git push', stop_on_failure=False),
