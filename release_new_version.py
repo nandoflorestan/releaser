@@ -33,14 +33,14 @@ Releaser(config,
     # TODO IMPLEMENT Check CHANGES file for the current milestone
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
     CheckTravis,  # We run this late, so Travis has more time to build
-    # ========== Most important steps here: ==========
+    # ========== All checks done. Let's do this! ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
     # TODO setup.py egg_info and ensure the new version number is there
     Shell('python setup.py register sdist upload'),  # http://pypi.python.org
     GitCommitVersionNumber,
     GitTag,  # Tag the current commit with the new version #
     SetDevVersion,  # Change version in source code again, this time with 'dev'
-    # TODO GitCommitVersionNumber(dev=True, msg='Bump version number after release.'),
+    GitCommitVersionNumber('future_version', msg='Bump version after release'),
     Shell('git push', stop_on_failure=False),
     Shell('git push --tags', stop_on_failure=False),
 ).release()

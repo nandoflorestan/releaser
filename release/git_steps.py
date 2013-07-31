@@ -66,12 +66,15 @@ class GitCommitVersionNumber(ReleaseStep):
     COMMAND = 'git commit -a -m "{0}"'
     ERROR_CODE = 54
 
-    def __init__(self, msg="Version {0}", stop_on_failure=True):
+    def __init__(self, which='the_version', msg="Version {0}",
+                 stop_on_failure=True):
+        assert which in ('the_version', 'future_version')
+        self.which = which
         self.msg = msg.replace('"', '\"')
         self.stop_on_failure = stop_on_failure
 
     def __call__(self):
-        msg = self.msg.format(self.releaser.the_version)
+        msg = self.msg.format(getattr(self.releaser, self.which))
         cmd = self.COMMAND.format(msg)
         retcode, text = system(cmd)
         if retcode != 0:
