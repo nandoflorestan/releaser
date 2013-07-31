@@ -27,7 +27,10 @@ def error_in_version(val, allow_dev=True):
 
 SOME_QUOTE = r'["\']'  # single or double quote
 QUOTED_VERSION = SOME_QUOTE + '(' + VERSION_NUMBER + ')' + SOME_QUOTE
-PYTHON_VERSION_LINE = str(RE().zero_or_more.whitespace.then.between(0, 2).underscore.then('version').then.between(0, 2).underscore.then.zero_or_more.whitespace.then('=').then.zero_or_more.whitespace.then.regex(QUOTED_VERSION).zero_or_more.whitespace)
+PYTHON_VERSION_LINE = str(RE().zero_or_more.whitespace
+    .between(0, 2).underscore.then('version').then.between(0, 2).underscore
+    .then.zero_or_more.whitespace.then('=').then.zero_or_more.whitespace
+    .then.regex(QUOTED_VERSION).then.zero_or_more.whitespace)
 PYTHON_VERSION_LINE_RE = re.compile(PYTHON_VERSION_LINE)
 
 

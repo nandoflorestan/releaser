@@ -84,7 +84,7 @@ class SetVersionNumberInteractively(ReleaseStep):
         version_in_python_source_file(path, replace=releaser.the_version)
 
 
-class SetDevVersion(ReleaseStep):
+class SetFutureVersion(ReleaseStep):
     '''Replaces the version number in the configured source code file with
     the future version number (the one ending in 'dev').
     '''

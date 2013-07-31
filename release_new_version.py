@@ -5,8 +5,8 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from release import Releaser
-from release.steps import (Shell, CheckTravis, SetDevVersion,
+from release import Releaser  # https://pypi.python.org/pypi/release
+from release.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
 from release.git_steps import (EnsureGitClean, EnsureGitBranch, GitTag,
     GitCommitVersionNumber)
@@ -39,7 +39,7 @@ Releaser(config,
     Shell('python setup.py register sdist upload'),  # http://pypi.python.org
     GitCommitVersionNumber,
     GitTag,  # Tag the current commit with the new version #
-    SetDevVersion,  # Change version in source code again, this time with 'dev'
+    SetFutureVersion,  # Write incremented version, now with 'dev' suffix
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
     Shell('git push', stop_on_failure=False),
     Shell('git push --tags', stop_on_failure=False),
