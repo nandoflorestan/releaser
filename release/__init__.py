@@ -42,6 +42,10 @@ class ReleaseStep(object):
         if warning:
             print(type(self), '\t', warning)
 
+    def rollback(self):
+        '''Rewind this command, when applicable.'''
+        pass
+
     ERROR_CODE = 1
 
 

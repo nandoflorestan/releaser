@@ -27,7 +27,7 @@ Releaser(config,
     Shell('python setup.py test'),
     # TODO IMPLEMENT CompileAndVerifyTranslations,
     # TODO IMPLEMENT BuildSphinxDocumentation(config),
-    # TODO Tell the user to upload the built docs (give URL)
+    # TODO IMPLEMENT Tell the user to upload the built docs (give URL)
     EnsureGitClean,  # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
     # TODO IMPLEMENT Check CHANGES file for the current milestone
@@ -42,4 +42,5 @@ Releaser(config,
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
     Shell('git push', stop_on_failure=False),
     Shell('git push --tags', stop_on_failure=False),
+    # TODO IMPLEMENT rollback with: git push --delete origin tagname
 ).release()

@@ -3,7 +3,7 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from . import ReleaseStep, StopRelease, system
+from . import ReleaseStep, StopRelease, system, system_or_stop
 
 
 def get_current_branch():
@@ -43,9 +43,7 @@ class EnsureGitClean(ReleaseStep):
 
 
 class GitTag(ReleaseStep):
-    '''Tags the current git commit with the new version number.
-    Optionally pushes tags.
-    '''
+    '''Tags the current git commit with the new version number.'''
     COMMAND = 'git tag -a v{0} -m "Version {0}"'
     ERROR_CODE = 53
 
@@ -60,6 +58,10 @@ class GitTag(ReleaseStep):
             print('The GitTag step failed with the following message:')
             print(text)
             print('Continuing anyway.')
+
+    def rollback(self):
+        retcode, text = system_or_stop('git tag -d "v{0}"'.format(
+            self.releaser.the_version))
 
 
 class GitCommitVersionNumber(ReleaseStep):
@@ -83,3 +85,6 @@ class GitCommitVersionNumber(ReleaseStep):
                 raise StopRelease(e)
             else:
                 print(e)
+
+    def rollback(self):
+        retcode, text = system_or_stop('git reset --hard HEAD^')
