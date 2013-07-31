@@ -1,0 +1,4 @@
+# http://docs.python.org/3/distutils/sourcedist.html#specifying-the-files-to-distribute
+
+include *.rst
+recursive-include release *.py *.rst *.txt *.pot *.po *.mo *.conf
