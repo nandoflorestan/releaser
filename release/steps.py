@@ -85,7 +85,16 @@ class SetVersionNumberInteractively(ReleaseStep):
 
 
 class SetDevVersion(ReleaseStep):
+    '''Replaces the version number in the configured source code file with
+    the future version number (the one ending in 'dev').
+    '''
     def __call__(self):
-        # TODO IMPLEMENT
-        print('Now remember to increment the version number, '
-              'add a "dev" suffix and commit.')
+        releaser = self.releaser
+        path = releaser.config['version_file']
+        # If the SetVersionNumberInteractively step is disabled for debugging,
+        # we can still execute the current step, by populating the_version:
+        if releaser.the_version is None:
+            releaser._the_version = version_in_python_source_file(path)
+        print('Ready for the next development cycle! Setting version ' +
+              releaser.future_version)
+        version_in_python_source_file(path, replace=releaser.future_version)

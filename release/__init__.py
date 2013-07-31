@@ -59,7 +59,9 @@ def system(command, input='', shell=True):
     result = o.read() + e.read()
     o.close()
     e.close()
-    # TODO: If verbose, print result
+    # TODO: If not verbose, do not print result
+    if result:
+        print(result.decode('utf-8'))
     return return_code, result
 
 
