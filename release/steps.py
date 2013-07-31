@@ -5,7 +5,9 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import requests
 from bag.console import bool_input
+from nine import input
 from . import ReleaseStep, StopRelease, system, system_or_stop
+from .regex import version_in_python_source_file
 
 
 class Shell(ReleaseStep):
@@ -73,7 +75,13 @@ class SetVersionNumberInteractively(ReleaseStep):
     ERROR_CODE = 4
 
     def __call__(self):
-        self.releaser.interactively_set_the_version()
+        releaser = self.releaser
+        path = releaser.config['version_file']
+        releaser.old_version = version_in_python_source_file(path)
+        print('Current version: {}'.format(releaser.old_version))
+        releaser.the_version = input('What is the new version number? ')
+        # Write the new version onto the source code
+        version_in_python_source_file(path, replace=releaser.the_version)
 
 
 class SetDevVersion(ReleaseStep):

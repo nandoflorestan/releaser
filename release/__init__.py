@@ -9,8 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import subprocess
 from sys import platform
 from pkg_resources import parse_version
-from nine import input
-from .regex import error_in_version, version_in_python_source_file
+from .regex import error_in_version
 
 
 class StopRelease(Exception):
@@ -114,13 +113,3 @@ class Releaser(object):
         parts = self.the_version.split('.')
         parts[-1] = str(int(parts[-1]) + 1)
         return '.'.join(parts) + 'dev'
-
-    def interactively_set_the_version(self):
-        '''This should be called by one of the release steps.'''
-        path = self.config['version_file']
-        self.old_version = version_in_python_source_file(path)
-        print('Current version: {}'.format(self.old_version))
-        self.the_version = input('What is the new version number? ')
-        # Write the new version onto the source code
-        version_in_python_source_file(path, replace=self.the_version)
-        return self.the_version
