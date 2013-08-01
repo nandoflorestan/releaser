@@ -5,16 +5,16 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from release import Releaser  # https://pypi.python.org/pypi/release
-from release.steps import (Shell, CheckTravis, SetFutureVersion,
+from releaser import Releaser  # https://pypi.python.org/pypi/release
+from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
-from release.git_steps import (EnsureGitClean, EnsureGitBranch,
+from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
     GitCommitVersionNumber, GitTag, GitPushTags)
 
 # This config information is used by multiple release steps below.
 config = dict(
     github_user='nandoflorestan',  # TODO infer from .git/config
-    github_repository='release',
+    github_repository='releaser',
     branch='master',  # Only release new versions in this git branch
     changes_file='CHANGES.rst',
     version_file='setup.py',  # Read and write version number on this file

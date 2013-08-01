@@ -18,11 +18,11 @@ def content_of(*files):
     return '\n'.join(content)
 
 setup(
-    name="release",
+    name="releaser",
     description='Automates the process of releasing a new version of '
     'some software.',
     long_description=content_of('README.rst', 'CHANGES.rst'),
-    url='https://github.com/nandoflorestan/release',
+    url='https://github.com/nandoflorestan/releaser',
     version='0.1.1dev',
     license='MIT',
     author='Nando Florestan',
@@ -50,6 +50,6 @@ setup(
     ],
     packages=find_packages(),
     include_package_data=True,
-    # test_suite='release.tests',
+    # test_suite='releaser.tests',
     zip_safe=False,
 )
