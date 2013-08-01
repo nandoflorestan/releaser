@@ -32,13 +32,14 @@ Releaser(config,
     EnsureGitBranch,  # I must be in the branch specified in config
     # TODO IMPLEMENT Check CHANGES file for the current milestone
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
-    CheckTravis,  # We run this late, so Travis has more time to build
+    # CheckTravis,  # We run this late, so Travis has more time to build
     # ========== All checks pass. Let's do this! ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
     Shell('python setup.py register sdist upload'),  # http://pypi.python.org
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
     SetFutureVersion,  # Write incremented version, now with 'dev' suffix
+    # TODO IMPLEMENT add heading in CHANGES for the new development version
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
     # git push is the ONLY thing that absolutely cannot be undone:
     Shell('git push', stop_on_failure=False),

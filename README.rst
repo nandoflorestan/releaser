@@ -18,7 +18,8 @@ and you can easily write your own.
 Installing *release*
 ====================
 
-    # Activate your virtualenv, then:
+Activate your virtualenv, then:
+
     easy_install -UZ release
 
 Getting started
@@ -31,6 +32,7 @@ Links
 =====
 
 Our project home and issue tracker are at GitHub_.
+It's easy to `use the source`_.
 
 *release* supports Python 2.6, 2.7, 3.2 and 3.3 (without translation)
 through the nine_ project.
@@ -40,5 +42,6 @@ A popular alternative to *release* is the project `zest.releaser`_.
 .. _`download this script`: https://github.com/nandoflorestan/release/raw/master/release_new_version.py
 .. _`read it here`: https://github.com/nandoflorestan/release/blob/master/release_new_version.py
 .. _GitHub: https://github.com/nandoflorestan/release
+.. _`use the source`: https://github.com/nandoflorestan/release/tree/master/release
 .. _nine: https://pypi.python.org/pypi/nine
 .. _`zest.releaser`: https://pypi.python.org/pypi/zest.releaser

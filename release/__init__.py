@@ -10,6 +10,7 @@ import subprocess
 from sys import platform
 from pkg_resources import parse_version
 from .regex import error_in_version
+# TODO logging instead of printing
 
 
 class StopRelease(Exception):
