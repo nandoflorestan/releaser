@@ -25,27 +25,27 @@ config = dict(
 # You can customize your release process below.
 # Comment out any steps you don't desire and add your own steps.
 Releaser(config,
-    # First of all we execute our tests and stop if any of them fail:
-    Shell('python setup.py test'),
+    Shell('python setup.py test'),  # First of all ensure tests pass
     # TODO IMPLEMENT CompileAndVerifyTranslations,
-    # TODO IMPLEMENT BuildSphinxDocumentation(config),
+    # TODO IMPLEMENT BuildSphinxDocumentation,
     # TODO IMPLEMENT Tell the user to upload the built docs (give URL)
     EnsureGitClean,  # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
-    # TODO IMPLEMENT Check CHANGES file for the current milestone
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
     # CheckTravis,  # We run this late, so Travis has more time to build
-    # ========== All checks pass. Let's do this! ==========
+
+    # ==========  All checks pass. RELEASE!  ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
-    # TODO IMPLEMENT register must check output for "Server response (200): OK"
-    # TODO IMPLEMENT upload must check output for "Server response (200): OK"
-    Shell('python setup.py register sdist upload'),  # http://pypi.python.org
+    # TODO IMPLEMENT CHANGES file: add heading for current version (below dev)
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
-    SetFutureVersion,  # Write incremented version, now with 'dev' suffix
-    # TODO IMPLEMENT add heading in CHANGES for the new development version
+    Shell('python setup.py register sdist upload'),  # http://pypi.python.org
+    # TODO IMPLEMENT register must check output for "Server response (200): OK"
+    # TODO IMPLEMENT upload must check output for "Server response (200): OK"
+
+    # ==========  Post-release: adjust repositories for new dev ==========
+    SetFutureVersion,  # Writes incremented version, now with 'dev' suffix
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
-    # git push is the ONLY thing that absolutely cannot be undone:
-    Shell('git push', stop_on_failure=False),
+    Shell('git push', stop_on_failure=False),  # absolutely cannot be undone
     GitPushTags,
 ).release()
