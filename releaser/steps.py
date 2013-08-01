@@ -83,7 +83,7 @@ class SetVersionNumberInteractively(ReleaseStep):
         releaser = self.releaser
         path = releaser.config['version_file']
         releaser.old_version = version_in_python_source_file(path)
-        print('Current version: {}'.format(releaser.old_version))
+        print('Current version: {0}'.format(releaser.old_version))
         releaser.the_version = input('What is the new version number? ')
         # Write the new version onto the source code
         version_in_python_source_file(path, replace=releaser.the_version)
