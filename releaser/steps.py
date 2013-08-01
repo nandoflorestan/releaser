@@ -17,6 +17,7 @@ class Shell(ReleaseStep):
     def __init__(self, command, stop_on_failure=True):
         self.COMMAND = command
         self.stop_on_failure = stop_on_failure
+        self.no_rollback = 'Unable to roll back the step {0}'.format(self)
 
     def __call__(self):
         self._execute_or_complain(self.COMMAND)  # sets self.success

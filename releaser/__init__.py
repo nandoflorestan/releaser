@@ -99,6 +99,7 @@ class Releaser(object):
 
     def release(self):
         rewindable = []
+        non_rewindable = []
         for step in self.instances:
             self.log.info(screen_header(step))
             try:
@@ -106,20 +107,24 @@ class Releaser(object):
             except StopRelease as e:
                 self.log.critical('Release process stopped at step {0}:\n{1}'
                     .format(step, e))
-                self.rewind(rewindable)
+                self.rewind(rewindable, non_rewindable)
                 from sys import exit
                 exit(step.ERROR_CODE)
             except Exception:
                 self.rewind(rewindable)
                 raise
             else:
-                if step.success and hasattr(step, 'rollback'):
+                if step.success and hasattr(step, 'no_rollback'):
+                    non_rewindable.append(step.no_rollback)
+                elif step.success and hasattr(step, 'rollback'):
                     rewindable.append(step)
         self.log.info('Successfully released version {0}. '
             'Sorry for the convenience, mcdonc!'.format(self.the_version))
 
-    def rewind(self, steps):
+    def rewind(self, steps, non_rewindable):
         self.log.critical(screen_header('ROLLBACK', decor='*'))
+        # Some steps offer a warning because they cannot be rolled back.
+        self.log.critical('\n'.join(non_rewindable))     # Display them.
         steps.reverse()
         for step in steps:
             self.log.critical(screen_header('ROLLBACK {0}'.format(step)))
