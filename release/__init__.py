@@ -96,6 +96,8 @@ class Releaser(object):
         # TODO: Rollback support
         for step in self.instances:
             step.perform()
+        print('Successfully released {0}. Sorry for the convenience, mcdonc!'
+              .format(self.the_version))
 
     old_version = None     # 0.1.2dev (exists when the program starts)
     _the_version = None    # 0.1.2    (the version being released)

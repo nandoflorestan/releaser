@@ -15,9 +15,30 @@ Many steps of a common release process have already been implemented,
 and you can easily write your own.
 (If you do write a step, please donate the code to the project.)
 
-*release* supports Python 2 and Python 3 through the nine_ project.
+Installing *release*
+====================
 
-You may want to take a look at another project, too: `zest.releaser`_.
+    # Activate your virtualenv, then:
+    easy_install -UZ release
 
+Getting started
+===============
+
+Simply `download this script`_ to the root of your project, then edit it.
+(You can `read it here`_.)
+
+Links
+=====
+
+Our project home and issue tracker are at GitHub_.
+
+*release* supports Python 2.6, 2.7, 3.2 and 3.3 (without translation)
+through the nine_ project.
+
+A popular alternative to *release* is the project `zest.releaser`_.
+
+.. _`download this script`: https://github.com/nandoflorestan/release/raw/master/release_new_version.py
+.. _`read it here`: https://github.com/nandoflorestan/release/blob/master/release_new_version.py
+.. _GitHub: https://github.com/nandoflorestan/release
 .. _nine: https://pypi.python.org/pypi/nine
 .. _`zest.releaser`: https://pypi.python.org/pypi/zest.releaser
