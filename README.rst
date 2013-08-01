@@ -81,6 +81,6 @@ A popular alternative to *releaser* is the project `zest.releaser`_.
 .. _`read it here`: https://github.com/nandoflorestan/releaser/blob/master/release_new_version.py
 .. _pypi: https://pypi.python.org/pypi
 .. _GitHub: https://github.com/nandoflorestan/releaser
-.. _`use the source`: https://github.com/nandoflorestan/releaser/tree/master/releaser
+.. _`read the source code`: https://github.com/nandoflorestan/releaser/tree/master/releaser
 .. _nine: https://pypi.python.org/pypi/nine
 .. _`zest.releaser`: https://pypi.python.org/pypi/zest.releaser
