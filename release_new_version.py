@@ -18,6 +18,8 @@ config = dict(
     branch='master',  # Only release new versions in this git branch
     changes_file='CHANGES.rst',
     version_file='setup.py',  # Read and write version number on this file
+    log_file='release.log.utf-8.tmp',
+    verbosity='warn',  # debug | info | warn | error
 )
 
 # You can customize your release process below.

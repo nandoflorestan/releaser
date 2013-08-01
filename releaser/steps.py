@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function,
@@ -66,8 +65,8 @@ class CheckTravis(ReleaseStep):
                 'Travis has not built branch "{0}" yet.'.format(branch))
         latest = finished[0]
         if latest['result'] == 0:
-            print('No problem in latest Travis build: "{0}"'.format(
-                latest.get('message')))
+            self.log.info('No problem in latest Travis build: "{0}"'.format(
+                          latest.get('message')))
         else:
             raise StopRelease(
                 'Last Travis build on branch "{0}" failed.'.format(branch))
@@ -100,6 +99,6 @@ class SetFutureVersion(ReleaseStep):
         # we can still execute the current step, by populating the_version:
         if releaser.the_version is None:
             releaser._the_version = version_in_python_source_file(path)
-        print('Ready for the next development cycle! Setting version ' +
-              releaser.future_version)
+        self.log.info('Ready for the next development cycle! Setting version '
+              + releaser.future_version)
         version_in_python_source_file(path, replace=releaser.future_version)

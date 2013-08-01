@@ -9,8 +9,8 @@ from __future__ import (absolute_import, division, print_function,
 import subprocess
 from sys import platform
 from pkg_resources import parse_version
+from bag.log import setup_log
 from .regex import error_in_version
-# TODO logging instead of printing
 
 
 class StopRelease(Exception):
@@ -28,26 +28,9 @@ class ReleaseStep(object):
         '''
         raise StopRelease('Step not implemented.')
 
-    def perform(self):
-        '''Wraps the call to this step, prints the warning if one is returned,
-        and exits if StopRelease is raised.
-        '''
-        try:
-            warning = self()
-        except StopRelease as e:
-            print('Release process stopped at step {0}:'.format(
-                  type(self)))
-            print(e.msg)
-            from sys import exit
-            exit(self.ERROR_CODE)
-        if warning:
-            print(type(self), '\t', warning)
-
-    def rollback(self):
-        '''Rewind this command, when applicable.'''
-        pass
-
     ERROR_CODE = 1
+    stop_on_failure = True  # TODO def stop_or_warn(self, msg)
+    # TODO Move system() and system_or_stop() in here
 
 
 def system(command, input='', shell=True):
@@ -80,25 +63,40 @@ def system_or_stop(command):
 
 class Releaser(object):
     def __init__(self, config, *steps):
-        self.config = config
-        # First, convert steps provided by the user into real instances
-        self.instances = []
         self.created_tags = []
+        self.config = config
+        # Configure logging
+        path = config.get('log_file', 'release.log.utf-8.tmp')
+        screen_level = config.get('verbosity', 'info')
+        self.log = setup_log(path=path, rotating=False, file_mode='w',
+                             disk_level='debug', screen_level=screen_level)
+        # Convert steps provided by the user into real instances
+        self.instances = []
         for step in steps:
             if isinstance(step, type):
                 step = step()  # Instantiate the ReleaseStep subclass
             step.config = config
             step.releaser = self
+            step.log = self.log
             self.instances.append(step)
         # Now that all steps are correctly instantiated,
         # it is safe to start running them by calling release().
 
     def release(self):
-        # TODO: Rollback support
         for step in self.instances:
-            step.perform()
-        print('Successfully released {0}. Sorry for the convenience, mcdonc!'
-              .format(self.the_version))
+            step_name = type(step).__name__
+            try:
+                self.log.info('============  ' + step_name + '  ============')
+                step()
+            except StopRelease as e:
+                self.log.critical('Release process stopped at step {0}:\n{1}'
+                    .format(step_name, e.msg))
+                from sys import exit
+                exit(self.ERROR_CODE)
+            else:
+                pass  # TODO: Add rollback() support
+        self.log.info('Successfully released version {0}. '
+            'Sorry for the convenience, mcdonc!'.format(self.the_version))
 
     old_version = None     # 0.1.2dev (exists when the program starts)
     _the_version = None    # 0.1.2    (the version being released)
@@ -119,7 +117,7 @@ class Releaser(object):
         self._the_version = val
 
     @property
-    def future_version(self):
+    def future_version(self):  # 0.1.3dev (development version after release)
         parts = self.the_version.split('.')
         parts[-1] = str(int(parts[-1]) + 1)
         return '.'.join(parts) + 'dev'

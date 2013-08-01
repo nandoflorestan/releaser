@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import (absolute_import, division, print_function,
@@ -65,7 +64,7 @@ class GitCommitVersionNumber(ReleaseStep):
             if self.stop_on_failure:
                 raise StopRelease(e)
             else:
-                print(e)
+                self.log.error(e)
 
     def rollback(self):
         retcode, text = system_or_stop('git reset --hard HEAD^')
@@ -80,8 +79,8 @@ class GitTag(ReleaseStep):
     def __call__(self):
         version = self.releaser.the_version
         if version is None:
-            print('Skipping the GitTag step. It can only run AFTER some other '
-                'step sets *the_version* on the releaser.')
+            self.log.warning('Skipping the GitTag step. It can only run AFTER '
+                'some other step sets *the_version* on the releaser.')
             return
         retcode, text = system(self.COMMAND.format(version))
         if retcode == 0:
