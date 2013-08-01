@@ -88,10 +88,28 @@ class GitTag(ReleaseStep):
             self.releaser.the_version))
 
 
+class GitPush(ReleaseStep):
+    COMMAND = 'git push'
+    ERROR_CODE = 55
+    stop_on_failure = False  # It should be easy to 'git push' afterwards
+    no_rollback = 'One should never try to undo a git push. Really.\n' \
+        'This release process went far -- the push succeeded -- but\n' \
+        'something else went wrong after the push. I figure it will\n' \
+        'be easier for you to finish the release process manually,\n' \
+        'so I will NOT roll back any of the steps that preceded the push.'
+
+    def __call__(self):
+        self._execute_or_complain(self.COMMAND)  # sets success
+        if self.success:
+            # Erase history so all steps before the push won't be rolled back
+            self.releaser.rewindable.clear()
+            self.releaser.non_rewindable.clear()
+
+
 class GitPushTags(ReleaseStep):
     '''Pushes local tags to the remote repository. Can rollback().'''
     COMMAND = 'git push --tags'
-    ERROR_CODE = 55
+    ERROR_CODE = 56
     stop_on_failure = False
 
     def __call__(self):

@@ -9,7 +9,7 @@ from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
-    GitCommitVersionNumber, GitTag, GitPushTags)
+    GitCommitVersionNumber, GitTag, GitPush, GitPushTags)
 
 # This config information is used by multiple release steps below.
 config = dict(
@@ -46,6 +46,6 @@ Releaser(config,
     # ==========  Post-release: adjust repositories for new dev ==========
     SetFutureVersion,  # Writes incremented version, now with 'dev' suffix
     GitCommitVersionNumber('future_version', msg='Bump version after release'),
-    Shell('git push', stop_on_failure=False),  # absolutely cannot be undone
+    GitPush,  # Cannot be undone. If successful, previous steps won't roll back
     GitPushTags,
 ).release()
