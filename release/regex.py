@@ -45,7 +45,7 @@ def version_in_python_source(text, replace=None):
     if replace:
         alist = []
         found = False
-        for line in text.splitlines(keepends=True):
+        for line in text.splitlines(True):  # True keeps line endings
             match = PYTHON_VERSION_LINE_RE.match(line)
             if not found and match:
                 found = True

@@ -52,18 +52,23 @@ class CheckTravis(ReleaseStep):
     software project in a certain branch.
     '''
     ERROR_CODE = 91
+    URL = 'https://api.travis-ci.org/repos/' \
+          '{github_user}/{github_repository}/builds'
 
     def __call__(self):
         branch = self.config.get('branch', 'master')
-        builds = requests.get('https://api.travis-ci.org/repos/'
-            '{github_user}/{github_repository}/builds'.format(
-                **self.config)).json()
+        resp = requests.get(self.URL.format(**self.config))
+        builds = resp.json()
         onbranch = filter(lambda x: x['branch'] == branch, builds)
         finished = filter(lambda x: x['state'] == 'finished', onbranch)
         if len(list(finished)) == 0:
             raise StopRelease(
                 'Travis has not built branch "{0}" yet.'.format(branch))
-        if finished[0]['result'] != 0:
+        latest = finished[0]
+        if latest['result'] == 0:
+            print('No problem in latest Travis build: "{0}"'.format(
+                latest.get('message')))
+        else:
             raise StopRelease(
                 'Last Travis build on branch "{0}" failed.'.format(branch))
 
