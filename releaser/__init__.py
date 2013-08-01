@@ -21,44 +21,53 @@ class StopRelease(Exception):
 
 class ReleaseStep(object):
     '''Abstract base class for release steps.'''
+    ERROR_CODE = 1
+    success = None
+    stop_on_failure = True
+
     def __call__(self):
         '''Override this method to do the main work of the release step.
-        On error, StopRelease should be raised. On success, this method can
-        return a warning unicode string. Or nothing.
+        On error, StopRelease should be raised.
         '''
         raise StopRelease('Step not implemented.')
 
-    ERROR_CODE = 1
-    stop_on_failure = True  # TODO def stop_or_warn(self, msg)
-    # TODO Move system() and system_or_stop() in here
+    def _succeed(self):
+        self.success = True
 
+    def _fail(self, msg):
+        self.success = False
+        if self.stop_on_failure:
+            raise StopRelease(msg)
+        else:
+            self.log.warning(msg + '\nContinuing anyway.')
 
-def system(command, input='', shell=True):
-    p = subprocess.Popen(command, shell=shell,
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE,
-                         close_fds=not platform.startswith('win'))
-    i, o, e = (p.stdin, p.stdout, p.stderr)
-    if input:
-        i.write(input)
-    i.close()
-    return_code = p.wait()
-    result = o.read() + e.read()
-    o.close()
-    e.close()
-    # TODO: If not verbose, do not print result
-    if result:
-        print(result.decode('utf-8'))
-    return return_code, result
+    def _execute(self, command, input='', shell=True):
+        p = subprocess.Popen(command, shell=shell,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             close_fds=not platform.startswith('win'))
+        i, o, e = (p.stdin, p.stdout, p.stderr)
+        if input:
+            i.write(input)
+        i.close()
+        return_code = p.wait()
+        normal_output = o.read().decode('utf-8')
+        error_output = e.read().decode('utf-8')
+        o.close()
+        e.close()
+        self.log.debug(normal_output)
+        self.log.error(error_output)
+        return return_code, normal_output + error_output
 
-
-def system_or_stop(command):
-    return_code, text = system(command)
-    if return_code != 0:
-        raise StopRelease('Command failed with code {0}: {1}'.format(
-            return_code, command))
-    return text
+    def _execute_or_complain(self, command, input='', shell=True,
+            msg='Command failed with code {code}: {cmd}'):
+        return_code, text = self._execute(command)
+        if return_code == 0:
+            self._succeed()
+        else:
+            self._fail(msg.format(code=return_code, cmd=command))
+        return text
 
 
 class Releaser(object):
@@ -92,14 +101,23 @@ class Releaser(object):
                 self.log.critical('Release process stopped at step {0}:\n{1}'
                     .format(step_name, e.msg))
                 from sys import exit
-                exit(self.ERROR_CODE)
+                exit(step.ERROR_CODE)
             else:
-                pass  # TODO: Add rollback() support
+                pass  # TODO: Add rollback() support. Check step.success
         self.log.info('Successfully released version {0}. '
             'Sorry for the convenience, mcdonc!'.format(self.the_version))
 
-    old_version = None     # 0.1.2dev (exists when the program starts)
+    _old_version = None    # 0.1.2dev (exists when the program starts)
     _the_version = None    # 0.1.2    (the version being released)
+
+    @property
+    def old_version(self):
+        return self._old_version
+
+    @old_version.setter
+    def old_version(self, val):
+        self._old_version = val
+        self.log.debug('Old version: {0}'.format(val))
 
     @property
     def the_version(self):
@@ -115,6 +133,7 @@ class Releaser(object):
             raise StopRelease(
                 'No, the version number must be higher than the current one!')
         self._the_version = val
+        self.log.debug('Version being released: {0}'.format(val))
 
     @property
     def future_version(self):  # 0.1.3dev (development version after release)

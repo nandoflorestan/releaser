@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import requests
 from bag.console import bool_input
 from nine import input
-from . import ReleaseStep, StopRelease, system, system_or_stop
+from . import ReleaseStep, StopRelease
 from .regex import version_in_python_source_file
 
 
@@ -14,15 +14,11 @@ class Shell(ReleaseStep):
     ERROR_CODE = 2
 
     def __init__(self, command, stop_on_failure=True):
-        super(Shell, self).__init__()
-        self.command = command
+        self.COMMAND = command
         self.stop_on_failure = stop_on_failure
 
     def __call__(self):
-        if self.stop_on_failure:
-            system_or_stop(self.command)
-        else:
-            system(self.command)
+        self._execute_or_complain(self.COMMAND)  # sets self.success
 
 
 class InteractivelyApproveDistribution(ReleaseStep):
@@ -32,7 +28,7 @@ class InteractivelyApproveDistribution(ReleaseStep):
     ERROR_CODE = 3
 
     def __call__(self):
-        system_or_stop('python setup.py sdist')
+        self._execute_or_complain('python setup.py sdist')
         # TODO: Optionally xdg-open the archive for convenience
         # Create the sdist with "-d <output_dir>"  on a temp dir.
         # Delete it at the end.
@@ -40,7 +36,8 @@ class InteractivelyApproveDistribution(ReleaseStep):
         print("to open the archive (in the 'dist' directory) ")
         print("and check that all files are in there.")
         if not bool_input("Do you approve the archive contents?"):
-            raise StopRelease('If the distribution is missing some files,\n'
+            raise StopRelease('Source distribution content not approved.\n'
+                'If the distribution is missing some files,\n'
                 "try correcting your MANIFEST.in file according to\n"
                 "http://docs.python.org/3/distutils/sourcedist.html"
                 "#specifying-the-files-to-distribute")
@@ -67,6 +64,7 @@ class CheckTravis(ReleaseStep):
         if latest['result'] == 0:
             self.log.info('No problem in latest Travis build: "{0}"'.format(
                           latest.get('message')))
+            self._succeed()
         else:
             raise StopRelease(
                 'Last Travis build on branch "{0}" failed.'.format(branch))
@@ -86,6 +84,7 @@ class SetVersionNumberInteractively(ReleaseStep):
         releaser.the_version = input('What is the new version number? ')
         # Write the new version onto the source code
         version_in_python_source_file(path, replace=releaser.the_version)
+        self._succeed()
 
 
 class SetFutureVersion(ReleaseStep):
@@ -102,3 +101,4 @@ class SetFutureVersion(ReleaseStep):
         self.log.info('Ready for the next development cycle! Setting version '
               + releaser.future_version)
         version_in_python_source_file(path, replace=releaser.future_version)
+        self._succeed()
