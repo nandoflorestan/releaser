@@ -102,8 +102,11 @@ class GitPush(ReleaseStep):
         self._execute_or_complain(self.COMMAND)  # sets success
         if self.success:
             # Erase history so all steps before the push won't be rolled back
-            self.releaser.rewindable.clear()
-            self.releaser.non_rewindable.clear()
+            self.log.debug('GitPush successful; erasing rollback history.')
+            # self.releaser.rewindable.clear()
+            self.releaser.rewindable[:] = []  # Python 2.6 has no clear()
+            # self.releaser.non_rewindable.clear()
+            self.releaser.non_rewindable[:] = []  # Python 2.6 has no clear()
 
 
 class GitPushTags(CommandStep):
