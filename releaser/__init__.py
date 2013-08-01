@@ -10,6 +10,7 @@ import subprocess
 from sys import platform
 from pkg_resources import parse_version
 from bag.log import setup_log
+from nine import str, nine
 from .regex import error_in_version
 
 
@@ -17,6 +18,7 @@ class StopRelease(RuntimeError):
     '''Release steps should raise this exception to stop the whole program.'''
 
 
+@nine
 class ReleaseStep(object):
     '''Abstract base class for release steps.'''
     ERROR_CODE = 1
@@ -59,13 +61,16 @@ class ReleaseStep(object):
         return return_code, normal_output + error_output
 
     def _execute_or_complain(self, command, input='', shell=True,
-            msg='Command failed with code {code}: {cmd}'):
+                             msg='Command failed with code {code}: {cmd}'):
         return_code, text = self._execute(command)
         if return_code == 0:
             self._succeed()
         else:
             self._fail(msg.format(code=return_code, cmd=command))
         return text
+
+    def __str__(self):
+        return type(self).__name__  # good default identifier for most steps
 
 
 class Releaser(object):
@@ -92,13 +97,12 @@ class Releaser(object):
     def release(self):
         rewindable = []
         for step in self.instances:
-            step_name = type(step).__name__
-            self.log.info('\n===========  ' + step_name + '  ===========')
+            self.log.info('\n===========  ' + str(step) + '  ===========')
             try:
                 step()
             except StopRelease as e:
                 self.log.critical('Release process stopped at step {0}:\n{1}'
-                    .format(step_name, str(e)))
+                    .format(step, e))
                 self.rewind(rewindable)
                 from sys import exit
                 exit(step.ERROR_CODE)
@@ -115,14 +119,13 @@ class Releaser(object):
         self.log.critical('\n****************  ROLLBACK  ****************')
         steps.reverse()
         for step in steps:
-            step_name = type(step).__name__
             self.log.critical('\n===========  ROLLBACK {0}  ==========='
-                              .format(step_name))
+                              .format(step))
             try:
                 step.rollback()
             except Exception as e:
                 self.log.error('Could not roll back step {0}:\n{1}'
-                    .format(step_name, str(e)))
+                    .format(step, str(e)))
 
     _old_version = None    # 0.1.2dev (exists when the program starts)
     _the_version = None    # 0.1.2    (the version being released)

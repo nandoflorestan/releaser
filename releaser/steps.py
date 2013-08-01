@@ -4,11 +4,12 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import requests
 from bag.console import bool_input
-from nine import input
+from nine import input, nine
 from . import ReleaseStep, StopRelease
 from .regex import version_in_python_source_file
 
 
+@nine
 class Shell(ReleaseStep):
     '''Runs some shell command.'''
     ERROR_CODE = 2
@@ -19,6 +20,9 @@ class Shell(ReleaseStep):
 
     def __call__(self):
         self._execute_or_complain(self.COMMAND)  # sets self.success
+
+    def __str__(self):
+        return self.COMMAND
 
 
 class InteractivelyApproveDistribution(ReleaseStep):
