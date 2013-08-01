@@ -7,10 +7,10 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
-    InteractivelyApproveDistribution, SetVersionNumberInteractively)
+    InteractivelyApproveDistribution, SetVersionNumberInteractively,
+    PypiRegister, PypiUpload)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
-    GitCommitVersionNumber, GitTag, PypiRegister, PypiUpload,
-    GitPush, GitPushTags)
+    GitCommitVersionNumber, GitTag, GitPush, GitPushTags)
 
 # This config information is used by multiple release steps below.
 config = dict(
