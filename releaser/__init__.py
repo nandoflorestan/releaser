@@ -13,10 +13,8 @@ from bag.log import setup_log
 from .regex import error_in_version
 
 
-class StopRelease(Exception):
+class StopRelease(RuntimeError):
     '''Release steps should raise this exception to stop the whole program.'''
-    def __init__(self, msg):
-        self.msg = msg
 
 
 class ReleaseStep(object):
@@ -92,20 +90,39 @@ class Releaser(object):
         # it is safe to start running them by calling release().
 
     def release(self):
+        rewindable = []
         for step in self.instances:
             step_name = type(step).__name__
+            self.log.info('\n===========  ' + step_name + '  ===========')
             try:
-                self.log.info('============  ' + step_name + '  ============')
                 step()
             except StopRelease as e:
                 self.log.critical('Release process stopped at step {0}:\n{1}'
-                    .format(step_name, e.msg))
+                    .format(step_name, str(e)))
+                self.rewind(rewindable)
                 from sys import exit
                 exit(step.ERROR_CODE)
+            except Exception:
+                self.rewind(rewindable)
+                raise
             else:
-                pass  # TODO: Add rollback() support. Check step.success
+                if step.success and hasattr(step, 'rollback'):
+                    rewindable.append(step)
         self.log.info('Successfully released version {0}. '
             'Sorry for the convenience, mcdonc!'.format(self.the_version))
+
+    def rewind(self, steps):
+        self.log.critical('\n****************  ROLLBACK  ****************')
+        steps.reverse()
+        for step in steps:
+            step_name = type(step).__name__
+            self.log.critical('\n===========  ROLLBACK {0}  ==========='
+                              .format(step_name))
+            try:
+                step.rollback()
+            except Exception as e:
+                self.log.error('Could not roll back step {0}:\n{1}'
+                    .format(step_name, str(e)))
 
     _old_version = None    # 0.1.2dev (exists when the program starts)
     _the_version = None    # 0.1.2    (the version being released)
