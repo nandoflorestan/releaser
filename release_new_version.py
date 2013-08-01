@@ -5,7 +5,7 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from releaser import Releaser  # https://pypi.python.org/pypi/release
+from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
@@ -35,6 +35,8 @@ Releaser(config,
     # CheckTravis,  # We run this late, so Travis has more time to build
     # ========== All checks pass. Let's do this! ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
+    # TODO IMPLEMENT register must check output for "Server response (200): OK"
+    # TODO IMPLEMENT upload must check output for "Server response (200): OK"
     Shell('python setup.py register sdist upload'),  # http://pypi.python.org
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number

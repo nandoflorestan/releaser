@@ -25,8 +25,13 @@ Activate your virtualenv, then:
 Getting started
 ===============
 
-Simply `download this script`_ to the root of your project, then edit it.
-(You can `read it here`_.)
+Simply `download this script`_ to the root of your project:
+
+    curl -O https://raw.github.com/nandoflorestan/releaser/master/release_new_version.py
+    chmod +x ./release_new_version.py
+    git add release_new_version.py
+
+Then edit the script. (You can `read it here`_.)
 
 Links
 =====
@@ -39,7 +44,7 @@ through the nine_ project.
 
 A popular alternative to *releaser* is the project `zest.releaser`_.
 
-.. _`download this script`: https://github.com/nandoflorestan/releaser/raw/master/release_new_version.py
+.. _`download this script`: https://raw.github.com/nandoflorestan/releaser/master/release_new_version.py
 .. _`read it here`: https://github.com/nandoflorestan/releaser/blob/master/release_new_version.py
 .. _GitHub: https://github.com/nandoflorestan/releaser
 .. _`use the source`: https://github.com/nandoflorestan/releaser/tree/master/releaser
