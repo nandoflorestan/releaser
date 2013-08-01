@@ -123,6 +123,7 @@ class Releaser(object):
                 from sys import exit
                 exit(step.ERROR_CODE)
             except Exception:
+                self.log.debug('Noooo!!!', exc_info=True)
                 self.rewind()
                 raise
             else:
