@@ -23,7 +23,7 @@ class Shell(ReleaseStep):
         self._execute_or_complain(self.COMMAND)  # sets self.success
 
     def __str__(self):
-        return self.COMMAND
+        return '[' + self.COMMAND + ']'
 
 
 class InteractivelyApproveDistribution(ReleaseStep):

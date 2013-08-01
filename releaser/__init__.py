@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import subprocess
 from sys import platform
 from pkg_resources import parse_version
-from bag.console import screen_header
+from bag.console import bool_input, screen_header
 from bag.log import setup_log
 from nine import str, nine
 from .regex import error_in_version
@@ -98,8 +98,8 @@ class Releaser(object):
         # it is safe to start running them by calling release().
 
     def release(self):
-        rewindable = []
-        non_rewindable = []
+        self.rewindable = []
+        self.non_rewindable = []
         for step in self.instances:
             self.log.info(screen_header(step))
             try:
@@ -107,25 +107,33 @@ class Releaser(object):
             except StopRelease as e:
                 self.log.critical('Release process stopped at step {0}:\n{1}'
                     .format(step, e))
-                self.rewind(rewindable, non_rewindable)
+                self.rewind()
                 from sys import exit
                 exit(step.ERROR_CODE)
             except Exception:
-                self.rewind(rewindable)
+                self.rewind()
                 raise
             else:
                 if step.success and hasattr(step, 'no_rollback'):
-                    non_rewindable.append(step.no_rollback)
+                    self.non_rewindable.append(step.no_rollback)
                 elif step.success and hasattr(step, 'rollback'):
-                    rewindable.append(step)
+                    self.rewindable.append(step)
         self.log.info('Successfully released version {0}. '
             'Sorry for the convenience, mcdonc!'.format(self.the_version))
 
-    def rewind(self, steps, non_rewindable):
-        self.log.critical(screen_header('ROLLBACK', decor='*'))
+    def rewind(self):
+        say = self.log.critical
+        say('\n' + screen_header('ROLLBACK', decor='*'))
         # Some steps offer a warning because they cannot be rolled back.
-        self.log.critical('\n'.join(non_rewindable))     # Display them.
-        steps.reverse()
+        say('\n'.join(self.non_rewindable))              # Display them.
+        if not self.rewindable:
+            say('No steps to roll back, but the release process FAILED.')
+            return
+        steps = list(reversed(self.rewindable))
+        print('I am about to roll back the following steps:\n{0}'.format(
+            ', '.join([str(step) for step in steps])))
+        if not bool_input('Continue?', default=True):
+            return
         for step in steps:
             self.log.critical(screen_header('ROLLBACK {0}'.format(step)))
             try:
