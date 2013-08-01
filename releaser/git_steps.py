@@ -63,7 +63,7 @@ class GitCommitVersionNumber(ReleaseStep):
         self._execute_or_complain(self.COMMAND.format(msg))  # sets success
 
     def rollback(self):
-        retcode, text = self._execute_or_complain('git reset --hard HEAD^')
+        self._execute_or_complain('git reset --hard HEAD^')
 
 
 class GitTag(ReleaseStep):

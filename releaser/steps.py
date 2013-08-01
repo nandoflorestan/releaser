@@ -107,3 +107,10 @@ class SetFutureVersion(ReleaseStep):
               + releaser.future_version)
         version_in_python_source_file(path, replace=releaser.future_version)
         self._succeed()
+
+
+class ErrorStep(ReleaseStep):
+    '''Raises an exception to force a rollback. Good for testing.'''
+
+    def __call__(self):
+        self._execute_or_complain('thisCommandDontExist')
