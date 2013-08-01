@@ -9,7 +9,7 @@ from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
-    GitCommitVersionNumber, GitTag, GitPush, GitPushTags)
+    GitCommitVersionNumber, GitTag, PypiRegister, GitPush, GitPushTags)
 
 # This config information is used by multiple release steps below.
 config = dict(
@@ -39,8 +39,8 @@ Releaser(config,
     # TODO IMPLEMENT CHANGES file: add heading for current version (below dev)
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
-    Shell('python setup.py register sdist upload'),  # http://pypi.python.org
-    # TODO IMPLEMENT register must check output for "Server response (200): OK"
+    PypiRegister,
+    Shell('python setup.py sdist upload'),  # http://pypi.python.org
     # TODO IMPLEMENT upload must check output for "Server response (200): OK"
 
     # ==========  Post-release: adjust repositories for new dev ==========

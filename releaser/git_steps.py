@@ -2,7 +2,7 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-from . import ReleaseStep, StopRelease
+from . import ReleaseStep, CommandStep, StopRelease
 
 
 def get_current_branch():
@@ -106,14 +106,11 @@ class GitPush(ReleaseStep):
             self.releaser.non_rewindable.clear()
 
 
-class GitPushTags(ReleaseStep):
+class GitPushTags(CommandStep):
     '''Pushes local tags to the remote repository. Can rollback().'''
     COMMAND = 'git push --tags'
     ERROR_CODE = 56
     stop_on_failure = False
-
-    def __call__(self):
-        self._execute_or_complain(self.COMMAND)  # sets self.success
 
     def rollback(self):
         for tag in self.releaser.created_tags:

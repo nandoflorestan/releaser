@@ -67,13 +67,25 @@ class ReleaseStep(object):
                              msg='Command failed with code {code}: {cmd}'):
         return_code, text = self._execute(command)
         if return_code == 0:
-            self._succeed()
+            if hasattr(self, '_validate_command_output'):
+                if self._validate_command_output(text):
+                    self._succeed()
+                else:
+                    self._fail(msg.format(code=return_code, cmd=command))
+            else:
+                self._succeed()
         else:
             self._fail(msg.format(code=return_code, cmd=command))
         return text
 
     def __str__(self):
         return type(self).__name__  # good default identifier for most steps
+
+
+class CommandStep(ReleaseStep):
+    '''Abstract base class for release steps... that executes a command.'''
+    def __call__(self):
+        self._execute_or_complain(self.COMMAND)  # sets self.success
 
 
 class Releaser(object):

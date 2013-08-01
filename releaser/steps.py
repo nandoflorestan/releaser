@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import requests
 from bag.console import bool_input
 from nine import input, nine
-from . import ReleaseStep, StopRelease
+from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
 
 
@@ -92,10 +92,20 @@ class SetVersionNumberInteractively(ReleaseStep):
         self._succeed()
 
 
+class PypiRegister(CommandStep):
+    COMMAND = 'python setup.py register'
+    ERROR_CODE = 5
+
+    def _validate_command_output(self, command_output):
+        return "Server response (200): OK" in command_output
+
+
 class SetFutureVersion(ReleaseStep):
     '''Replaces the version number in the configured source code file with
     the future version number (the one ending in 'dev').
     '''
+    ERROR_CODE = 7
+
     def __call__(self):
         releaser = self.releaser
         path = releaser.config['version_file']
@@ -109,8 +119,7 @@ class SetFutureVersion(ReleaseStep):
         self._succeed()
 
 
-class ErrorStep(ReleaseStep):
+class ErrorStep(CommandStep):
     '''Raises an exception to force a rollback. Good for testing.'''
-
-    def __call__(self):
-        self._execute_or_complain('thisCommandDontExist')
+    COMMAND = 'thisCommandDontExist'
+    ERROR_CODE = 255
