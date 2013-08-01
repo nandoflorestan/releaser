@@ -9,7 +9,8 @@ from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, SetVersionNumberInteractively)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
-    GitCommitVersionNumber, GitTag, PypiRegister, GitPush, GitPushTags)
+    GitCommitVersionNumber, GitTag, PypiRegister, PypiUpload,
+    GitPush, GitPushTags)
 
 # This config information is used by multiple release steps below.
 config = dict(
@@ -32,16 +33,15 @@ Releaser(config,
     EnsureGitClean,  # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
-    # CheckTravis,  # We run this late, so Travis has more time to build
+    # CheckTravis,  # We run this late, so travis-ci has more time to build
 
     # ==========  All checks pass. RELEASE!  ==========
     SetVersionNumberInteractively,  # Ask for version and write to source code
     # TODO IMPLEMENT CHANGES file: add heading for current version (below dev)
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
-    PypiRegister,
-    Shell('python setup.py sdist upload'),  # http://pypi.python.org
-    # TODO IMPLEMENT upload must check output for "Server response (200): OK"
+    PypiRegister,  # Creates the new release at http://pypi.python.org
+    PypiUpload,  # Uploads a source distribution to http://pypi.python.org
 
     # ==========  Post-release: adjust repositories for new dev ==========
     SetFutureVersion,  # Writes incremented version, now with 'dev' suffix

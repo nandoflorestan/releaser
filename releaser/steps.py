@@ -95,6 +95,17 @@ class SetVersionNumberInteractively(ReleaseStep):
 class PypiRegister(CommandStep):
     COMMAND = 'python setup.py register'
     ERROR_CODE = 5
+    no_rollback = 'The release has been created on http://pypi.python.org,\n' \
+        'Unfortunately, the release must be removed manually.'
+
+    def _validate_command_output(self, command_output):
+        return "Server response (200): OK" in command_output
+
+
+class PypiUpload(CommandStep):
+    COMMAND = 'python setup.py sdist upload'
+    ERROR_CODE = 6
+    no_rollback = 'Cannot roll back the sdist upload to http://pypi.python.org'
 
     def _validate_command_output(self, command_output):
         return "Server response (200): OK" in command_output
