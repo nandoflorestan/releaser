@@ -9,6 +9,7 @@ from __future__ import (absolute_import, division, print_function,
 import subprocess
 from sys import platform
 from pkg_resources import parse_version
+from bag.console import screen_header
 from bag.log import setup_log
 from nine import str, nine
 from .regex import error_in_version
@@ -52,12 +53,14 @@ class ReleaseStep(object):
             i.write(input)
         i.close()
         return_code = p.wait()
-        normal_output = o.read().decode('utf-8')
-        error_output = e.read().decode('utf-8')
+        normal_output = o.read().strip().decode('utf-8')
+        error_output = e.read().strip().decode('utf-8')
         o.close()
         e.close()
-        self.log.debug(normal_output)
-        self.log.error(error_output)
+        if normal_output:
+            self.log.debug(normal_output)
+        if error_output:
+            self.log.error(error_output)
         return return_code, normal_output + error_output
 
     def _execute_or_complain(self, command, input='', shell=True,
@@ -97,7 +100,7 @@ class Releaser(object):
     def release(self):
         rewindable = []
         for step in self.instances:
-            self.log.info('\n===========  ' + str(step) + '  ===========')
+            self.log.info(screen_header(step))
             try:
                 step()
             except StopRelease as e:
@@ -116,11 +119,10 @@ class Releaser(object):
             'Sorry for the convenience, mcdonc!'.format(self.the_version))
 
     def rewind(self, steps):
-        self.log.critical('\n****************  ROLLBACK  ****************')
+        self.log.critical(screen_header('ROLLBACK', decor='*'))
         steps.reverse()
         for step in steps:
-            self.log.critical('\n===========  ROLLBACK {0}  ==========='
-                              .format(step))
+            self.log.critical(screen_header('ROLLBACK {0}'.format(step)))
             try:
                 step.rollback()
             except Exception as e:
