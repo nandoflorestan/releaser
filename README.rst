@@ -18,14 +18,14 @@ to the project by making a pull request on GitHub.
 Installing *releaser*
 =====================
 
-Activate your virtualenv, then:
+Activate your virtualenv, then::
 
     easy_install -UZ releaser
 
 Getting started
 ===============
 
-Simply `download this script`_ to the root of your project:
+Simply `download this script`_ to the root of your project::
 
     curl -O https://raw.github.com/nandoflorestan/releaser/master/release_new_version.py
     chmod +x ./release_new_version.py
