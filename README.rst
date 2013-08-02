@@ -72,10 +72,11 @@ Links
 Our project home and issue tracker are at GitHub_.
 It's easy to `read the source code`_.
 
+A popular alternative to *releaser* is the project `zest.releaser`_.
+It differs in features and support for Python versions.
+
 *releaser* supports Python 2.6, 2.7, 3.2 and 3.3 (without translation)
 through the nine_ project.
-
-A popular alternative to *releaser* is the project `zest.releaser`_.
 
 .. _`download this script`: https://raw.github.com/nandoflorestan/releaser/master/release_new_version.py
 .. _`read it here`: https://github.com/nandoflorestan/releaser/blob/master/release_new_version.py
