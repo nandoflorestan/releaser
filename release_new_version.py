@@ -7,8 +7,8 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
-    InteractivelyApproveDistribution, SetVersionNumberInteractively,
-    PypiRegister, PypiUpload)
+    InteractivelyApproveDistribution, InteractivelyEnsureChangesDocumented,
+    SetVersionNumberInteractively, PypiRegister, PypiUpload)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
     GitCommitVersionNumber, GitTag, GitPush, GitPushTags)
 
@@ -33,8 +33,8 @@ Releaser(config,
     # TODO IMPLEMENT Tell the user to upload the built docs (give URL)
     EnsureGitClean,  # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
-    # TODO IMPLEMENT InteractivelyEnsureChangesDocumented,
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
+    InteractivelyEnsureChangesDocumented,
     # CheckTravis,  # We run this late, so travis-ci has more time to build
 
     # ==========  All checks pass. RELEASE!  ==========

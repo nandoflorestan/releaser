@@ -26,6 +26,13 @@ class Shell(ReleaseStep):
         return '[' + self.COMMAND + ']'
 
 
+class InteractivelyEnsureChangesDocumented(ReleaseStep):
+    ERROR_CODE = 3
+
+    def __call__(self):
+        if not bool_input('Did you remember to update the CHANGES file?'):
+            raise StopRelease('One more joshlabotniked release is avoided.')
+
 # TODO Implement *.rst checker:
 # from docutils.core import publish_parts
 # publish_parts(content_of('README.rst'), writer_name='html
@@ -36,15 +43,15 @@ class InteractivelyApproveDistribution(ReleaseStep):
     '''Generate a source distribution and let the user verify that
     all files are in there.
     '''
-    ERROR_CODE = 3
+    ERROR_CODE = 5
 
     def __call__(self):
         self._execute_or_complain('python setup.py sdist')
         # TODO: Optionally xdg-open the archive for convenience
         # Create the sdist with "-d <output_dir>"  on a temp dir.
         # Delete it at the end.
-        print("A source distribution has been generated. This is your chance ")
-        print("to open the archive (in the 'dist' directory) ")
+        print("A temporary source distribution has been generated. This is")
+        print("your chance to open the new archive (in the 'dist' directory)")
         print("and check that all files are in there.")
         if not bool_input("Do you approve the archive contents?"):
             raise StopRelease('Source distribution content not approved.\n'
@@ -85,7 +92,7 @@ class SetVersionNumberInteractively(ReleaseStep):
     '''Asks the user for the new version number and writes it onto
     the configured source code file.
     '''
-    ERROR_CODE = 4
+    ERROR_CODE = 6
 
     def __call__(self):
         releaser = self.releaser
@@ -103,7 +110,7 @@ class SetVersionNumberInteractively(ReleaseStep):
 
 class PypiRegister(CommandStep):
     COMMAND = 'python setup.py register'
-    ERROR_CODE = 5
+    ERROR_CODE = 7
     no_rollback = 'The release has been created on http://pypi.python.org,\n' \
         'Unfortunately, the release must be removed manually.'
 
@@ -113,7 +120,7 @@ class PypiRegister(CommandStep):
 
 class PypiUpload(CommandStep):
     COMMAND = 'python setup.py sdist upload'
-    ERROR_CODE = 6
+    ERROR_CODE = 8
     no_rollback = 'Cannot roll back the sdist upload to http://pypi.python.org'
 
     def _validate_command_output(self, command_output):
@@ -124,7 +131,7 @@ class SetFutureVersion(ReleaseStep):
     '''Replaces the version number in the configured source code file with
     the future version number (the one ending in 'dev').
     '''
-    ERROR_CODE = 7
+    ERROR_CODE = 9
 
     def __call__(self):
         releaser = self.releaser

@@ -9,11 +9,10 @@ from setuptools import setup, find_packages
 
 def content_of(*files):
     import codecs
-    open = lambda path: codecs.open(path, encoding='utf-8')
     here = os.path.abspath(os.path.dirname(__file__))
     content = []
     for f in files:
-        with open(os.path.join(here, f)) as stream:
+        with codecs.open(os.path.join(here, f), encoding='utf-8') as stream:
             content.append(stream.read())
     return '\n'.join(content)
 
