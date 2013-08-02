@@ -27,18 +27,18 @@ def error_in_version(val, allow_dev=True):
 
 SOME_QUOTE = r'["\']'  # single or double quote
 QUOTED_VERSION = SOME_QUOTE + '(' + VERSION_NUMBER + ')' + SOME_QUOTE
-PYTHON_VERSION_LINE = str(RE().zero_or_more.whitespace
-    .between(0, 2).underscore.then('version').then.between(0, 2).underscore
-    .then.zero_or_more.whitespace.then('=').then.zero_or_more.whitespace
-    .then.regex(QUOTED_VERSION).then.zero_or_more.whitespace)
-PYTHON_VERSION_LINE_RE = re.compile(PYTHON_VERSION_LINE)
 
 
-def version_in_python_source(text, replace=None):
+def version_in_python_source(text, replace=None, keyword='version'):
     '''If ``replace`` is None, returns the version number found in ``text``.
     Else, returns an updated ``text`` (with the version number specified in
     the ``replace`` argument).
     '''
+    PYTHON_VERSION_LINE = str(RE().zero_or_more.whitespace
+        .between(0, 2).underscore.then(keyword).then.between(0, 2).underscore
+        .then.zero_or_more.whitespace.then('=').then.zero_or_more.whitespace
+        .then.regex(QUOTED_VERSION).then.zero_or_more.whitespace)
+    PYTHON_VERSION_LINE_RE = re.compile(PYTHON_VERSION_LINE)
     match = PYTHON_VERSION_LINE_RE.search(text)
     assert match, 'Could not find version number in Python source code.'
     version = match.groups()[0]
@@ -57,17 +57,18 @@ def version_in_python_source(text, replace=None):
         return version
 
 
-def version_in_python_source_file(path, replace=None, encoding='utf-8'):
+def version_in_python_source_file(path, replace=None, keyword='version',
+                                  encoding='utf-8'):
     '''If replace is None, returns the version number found in file ``path``.
     Else, replaces the version number with the one specified in ``replace``.
     '''
     ret = version_in_python_source(content_of(path, encoding=encoding),
-                                   replace=replace)
+                                   replace=replace, keyword=keyword)
     if replace:
         with codecs.open(path, 'w', encoding=encoding) as stream:
             stream.write(ret)
         # Test the change we just did by reading the file we just wrote
         assert replace == version_in_python_source_file(
-            path, encoding=encoding)
+            path, keyword=keyword, encoding=encoding)
     else:
         return ret

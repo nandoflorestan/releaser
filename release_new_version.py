@@ -19,6 +19,7 @@ config = dict(
     branch='master',  # Only release new versions in this git branch
     changes_file='CHANGES.rst',
     version_file='setup.py',  # Read and write version number on this file
+    version_keyword='version',    # Part of the variable name in that file
     log_file='release.log.utf-8.tmp',
     verbosity='info',  # debug | info | warn | error
 )
@@ -32,6 +33,7 @@ Releaser(config,
     # TODO IMPLEMENT Tell the user to upload the built docs (give URL)
     EnsureGitClean,  # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
+    # TODO IMPLEMENT InteractivelyEnsureChangesDocumented,
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
     # CheckTravis,  # We run this late, so travis-ci has more time to build
 

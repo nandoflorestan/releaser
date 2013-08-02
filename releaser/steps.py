@@ -26,6 +26,12 @@ class Shell(ReleaseStep):
         return '[' + self.COMMAND + ']'
 
 
+# TODO Implement *.rst checker:
+# from docutils.core import publish_parts
+# publish_parts(content_of('README.rst'), writer_name='html
+# <string>:72: (ERROR/3) Unknown target name: "read the source code".
+
+
 class InteractivelyApproveDistribution(ReleaseStep):
     '''Generate a source distribution and let the user verify that
     all files are in there.
@@ -84,11 +90,14 @@ class SetVersionNumberInteractively(ReleaseStep):
     def __call__(self):
         releaser = self.releaser
         path = releaser.config['version_file']
-        releaser.old_version = version_in_python_source_file(path)
+        keyword = releaser.config['version_keyword']
+        releaser.old_version = version_in_python_source_file(
+            path, keyword=keyword)
         print('Current version: {0}'.format(releaser.old_version))
         releaser.the_version = input('What is the new version number? ')
         # Write the new version onto the source code
-        version_in_python_source_file(path, replace=releaser.the_version)
+        version_in_python_source_file(
+            path, keyword=keyword, replace=releaser.the_version)
         self._succeed()
 
 
@@ -120,13 +129,16 @@ class SetFutureVersion(ReleaseStep):
     def __call__(self):
         releaser = self.releaser
         path = releaser.config['version_file']
+        keyword = releaser.config['version_keyword']
         # If the SetVersionNumberInteractively step is disabled for debugging,
         # we can still execute the current step, by populating the_version:
         if releaser.the_version is None:
-            releaser._the_version = version_in_python_source_file(path)
+            releaser._the_version = version_in_python_source_file(
+                path, keyword=keyword)
         self.log.info('Ready for the next development cycle! Setting version '
               + releaser.future_version)
-        version_in_python_source_file(path, replace=releaser.future_version)
+        version_in_python_source_file(
+            path, keyword=keyword, replace=releaser.future_version)
         self._succeed()
 
 
