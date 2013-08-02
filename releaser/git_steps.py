@@ -4,24 +4,8 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 from . import ReleaseStep, CommandStep, StopRelease
 
-
-def get_current_branch():
-    with open('.git/HEAD') as f:
-        return f.read().strip().split('/')[-1]
-
-
-class EnsureGitBranch(ReleaseStep):
-    '''I must be in the branch specified in config.'''
-    ERROR_CODE = 51
-
-    def __call__(self):
-        required = self.config.get('branch', 'master')
-        branch = get_current_branch()
-        if branch != required:
-            raise StopRelease('You are in branch "{0}", but should be '
-                'in branch "{1}" in order to make a release.'.format(
-                    branch, required))
-        self._succeed()
+__all__ = ('get_current_branch', 'EnsureGitClean', 'EnsureGitBranch',
+    'GitCommitVersionNumber', 'GitTag', 'GitPush', 'GitPushTags')
 
 
 class EnsureGitClean(ReleaseStep):
@@ -41,6 +25,25 @@ class EnsureGitClean(ReleaseStep):
         if changes:
             raise StopRelease(
                 'There are uncommitted changes in tracked files.')
+        self._succeed()
+
+
+def get_current_branch():
+    with open('.git/HEAD') as f:
+        return f.read().strip().split('/')[-1]
+
+
+class EnsureGitBranch(ReleaseStep):
+    '''I must be in the branch specified in config.'''
+    ERROR_CODE = 51
+
+    def __call__(self):
+        required = self.config.get('branch', 'master')
+        branch = get_current_branch()
+        if branch != required:
+            raise StopRelease('You are in branch "{0}", but should be '
+                'in branch "{1}" in order to make a release.'.format(
+                    branch, required))
         self._succeed()
 
 

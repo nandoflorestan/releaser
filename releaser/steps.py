@@ -10,6 +10,11 @@ from path import path as pathpy
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
 
+__all__ = ('Shell', 'CheckRstFiles', 'InteractivelyApproveDistribution',
+     'InteractivelyEnsureChangesDocumented', 'CheckTravis',
+    'SetVersionNumberInteractively', 'PypiRegister', 'PypiUpload',
+    'SetFutureVersion', 'ErrorStep')
+
 
 @nine
 class Shell(ReleaseStep):
@@ -26,16 +31,6 @@ class Shell(ReleaseStep):
 
     def __str__(self):
         return '[' + self.COMMAND + ']'
-
-
-class InteractivelyEnsureChangesDocumented(ReleaseStep):
-    ERROR_CODE = 3
-
-    def __call__(self):
-        if bool_input('Did you remember to update the CHANGES file?'):
-            self.log.debug('User says CHANGES file is up to date.')
-        else:
-            raise StopRelease('One more joshlabotniked release is avoided.')
 
 
 class CheckRstFiles(ReleaseStep):
@@ -78,6 +73,16 @@ class InteractivelyApproveDistribution(ReleaseStep):
                 "try correcting your MANIFEST.in file according to\n"
                 "http://docs.python.org/3/distutils/sourcedist.html"
                 "#specifying-the-files-to-distribute")
+
+
+class InteractivelyEnsureChangesDocumented(ReleaseStep):
+    ERROR_CODE = 3
+
+    def __call__(self):
+        if bool_input('Did you remember to update the CHANGES file?'):
+            self.log.debug('User says CHANGES file is up to date.')
+        else:
+            raise StopRelease('One more joshlabotniked release is avoided.')
 
 
 class CheckTravis(ReleaseStep):

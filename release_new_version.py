@@ -6,11 +6,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 from releaser import Releaser          # easy_install -UZ releaser
-from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
-    InteractivelyApproveDistribution, InteractivelyEnsureChangesDocumented,
-    SetVersionNumberInteractively, PypiRegister, PypiUpload, CheckRstFiles)
-from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
-    GitCommitVersionNumber, GitTag, GitPush, GitPushTags)
+from releaser.steps import *
+from releaser.git_steps import *
 
 # This config information is used by multiple release steps below.
 config = dict(
@@ -39,7 +36,7 @@ Releaser(config,
     InteractivelyEnsureChangesDocumented,     # Did you update CHANGES.rst?
     # CheckTravis,  # We run this late, so travis-ci has more time to build
 
-    # ==========  All checks pass. RELEASE!  ==========
+    # =================  All checks pass. RELEASE!  ===========================
     SetVersionNumberInteractively,  # Ask for version and write to source code
     # TODO IMPLEMENT CHANGES file: add heading for current version (below dev)
     GitCommitVersionNumber,
@@ -47,9 +44,10 @@ Releaser(config,
     PypiRegister,  # Creates the new release at http://pypi.python.org
     PypiUpload,  # Uploads a source distribution to http://pypi.python.org
 
-    # ==========  Post-release: adjust repositories for new dev ==========
+    # ===========  Post-release: set development version and push  ============
     SetFutureVersion,  # Writes incremented version, now with 'dev' suffix
-    GitCommitVersionNumber('future_version', msg='Bump version after release'),
+    GitCommitVersionNumber('future_version',
+                           msg='Bump version to {0} after release'),
     GitPush,  # Cannot be undone. If successful, previous steps won't roll back
     GitPushTags,
 ).release()
