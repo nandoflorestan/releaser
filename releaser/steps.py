@@ -3,8 +3,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import requests
+from bag.check_rst import check_rst_file
 from bag.console import bool_input
 from nine import input, nine
+from path import path as pathpy
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
 
@@ -30,13 +32,30 @@ class InteractivelyEnsureChangesDocumented(ReleaseStep):
     ERROR_CODE = 3
 
     def __call__(self):
-        if not bool_input('Did you remember to update the CHANGES file?'):
+        if bool_input('Did you remember to update the CHANGES file?'):
+            self.log.debug('User says CHANGES file is up to date.')
+        else:
             raise StopRelease('One more joshlabotniked release is avoided.')
 
-# TODO Implement *.rst checker:
-# from docutils.core import publish_parts
-# publish_parts(content_of('README.rst'), writer_name='html
-# <string>:72: (ERROR/3) Unknown target name: "read the source code".
+
+class CheckRstFiles(ReleaseStep):
+    '''Helps keep documentation correct by verifying .rst documentation files.
+    If files are not provided to the constructor, recursively finds *.rst files
+    in the current directory and subdirectories.
+    '''
+    ERROR_CODE = 4
+
+    def __init__(self, *files):
+        self.paths = files
+
+    def __call__(self):
+        paths = self.paths or pathpy('.').walkfiles('*.rst')
+        for path in paths:
+            self.log.info('Checking ' + path)
+            warnings = check_rst_file(path)
+            if warnings:
+                raise StopRelease('There are errors in {0}:\n{1}'.format(path,
+                    '\n'.join([str(w) for w in warnings])))
 
 
 class InteractivelyApproveDistribution(ReleaseStep):

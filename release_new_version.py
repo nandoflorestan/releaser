@@ -8,7 +8,7 @@ from __future__ import (absolute_import, division, print_function,
 from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import (Shell, CheckTravis, SetFutureVersion,
     InteractivelyApproveDistribution, InteractivelyEnsureChangesDocumented,
-    SetVersionNumberInteractively, PypiRegister, PypiUpload)
+    SetVersionNumberInteractively, PypiRegister, PypiUpload, CheckRstFiles)
 from releaser.git_steps import (EnsureGitClean, EnsureGitBranch,
     GitCommitVersionNumber, GitTag, GitPush, GitPushTags)
 
@@ -28,13 +28,15 @@ config = dict(
 # Comment out any steps you don't desire and add your own steps.
 Releaser(config,
     Shell('python setup.py test'),  # First of all ensure tests pass
+    CheckRstFiles,  # Documentation: recursively verify ALL .rst files, or:
+    # CheckRstFiles('README.rst', 'CHANGES.rst', 'LICENSE.rst'),  # just a few.
     # TODO IMPLEMENT CompileAndVerifyTranslations,
     # TODO IMPLEMENT BuildSphinxDocumentation,
     # TODO IMPLEMENT Tell the user to upload the built docs (give URL)
-    EnsureGitClean,  # There are no uncommitted changes in tracked files.
+    EnsureGitClean,   # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
-    InteractivelyEnsureChangesDocumented,
+    InteractivelyEnsureChangesDocumented,     # Did you update CHANGES.rst?
     # CheckTravis,  # We run this late, so travis-ci has more time to build
 
     # ==========  All checks pass. RELEASE!  ==========

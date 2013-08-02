@@ -16,6 +16,9 @@ def content_of(*files):
             content.append(stream.read())
     return '\n'.join(content)
 
+dependencies = ['nine > 0.3.2', 'bag > 0.3.7', 'docutils',
+    'grimace', 'path.py', 'requests']
+
 setup(
     name="releaser",
     description='Automates the process of releasing a new version of '
@@ -26,7 +29,7 @@ setup(
     license='MIT',
     author='Nando Florestan',
     author_email="nandoflorestan@gmail.com",
-    install_requires=['nine', 'bag', 'grimace', 'requests'],
+    install_requires=dependencies,
     classifiers=[  # http://pypi.python.org/pypi?:action=list_classifiers
         'Development Status :: 4 - Beta',
         # 'Development Status :: 5 - Production/Stable',
