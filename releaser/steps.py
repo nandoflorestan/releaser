@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import requests
 from bag.check_rst import check_rst_file
 from bag.console import bool_input
-from nine import input, nine
+from nine import filter, input, nine
 from path import path as pathpy
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
@@ -98,8 +98,8 @@ class CheckTravis(ReleaseStep):
         resp = requests.get(self.URL.format(**self.config))
         builds = resp.json()
         onbranch = filter(lambda x: x['branch'] == branch, builds)
-        finished = filter(lambda x: x['state'] == 'finished', onbranch)
-        if len(list(finished)) == 0:
+        finished = list(filter(lambda x: x['state'] == 'finished', onbranch))
+        if len(finished) == 0:
             raise StopRelease(
                 'Travis has not built branch "{0}" yet.'.format(branch))
         latest = finished[0]
@@ -135,7 +135,7 @@ class SetVersionNumberInteractively(ReleaseStep):
 class PypiRegister(CommandStep):
     COMMAND = 'python setup.py register'
     ERROR_CODE = 7
-    no_rollback = 'The release has been created on http://pypi.python.org,\n' \
+    no_rollback = 'The release has been created on http://pypi.python.org.\n' \
         'Unfortunately, the release must be removed manually.'
 
     def _validate_command_output(self, command_output):

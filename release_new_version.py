@@ -9,7 +9,7 @@ from releaser import Releaser          # easy_install -UZ releaser
 from releaser.steps import *
 from releaser.git_steps import *
 
-# This config information is used by multiple release steps below.
+# These settings are used by multiple release steps below.
 config = dict(
     github_user='nandoflorestan',  # TODO infer from .git/config
     github_repository='releaser',

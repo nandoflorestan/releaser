@@ -13,7 +13,7 @@ a release script that differs a little bit from others.)
 
 Many steps of a common release process have already been implemented,
 and you can easily write your own. If you do write a step, please donate it
-to the project by making a pull request on GitHub.
+to the project by making a pull request on GitHub_.
 
 Installing *releaser*
 =====================
