@@ -1,3 +1,4 @@
+====================================================================
 Easily write a script to release a new version, with variable steps.
 ====================================================================
 
@@ -15,12 +16,14 @@ Many steps of a common release process have already been implemented,
 and you can easily write your own. If you do write a step, please donate it
 to the project by making a pull request on GitHub_.
 
+
 Installing *releaser*
 =====================
 
 Activate your virtualenv, then::
 
     easy_install -UZ releaser
+
 
 Getting started
 ===============
@@ -41,6 +44,7 @@ verify the contents of a zip file before it is uploaded to pypi_.
 *releaser* also makes you type the number of the version being released, which
 is then validated (for instance, it is compared to the current version), then
 written to a source code file that belongs to your project.
+
 
 Rolling back
 ============
@@ -66,6 +70,7 @@ Other steps (such as creating a release on pypi_) cannot be automatically
 rewinded for technical reasons, but *releaser* warns you that you have to
 do it manually before asking whether to roll back the release.
 
+
 Links
 =====
 
@@ -75,7 +80,7 @@ It's easy to `read the source code`_.
 A popular alternative to *releaser* is the project `zest.releaser`_. It differs
 in features, manners of extensibility and support for Python versions.
 
-*releaser* supports Python 2.6, 2.7, 3.2 and 3.3 (without translation)
+*releaser* supports Python 2.6, 2.7, 3.2, 3.3 and 3.4 (without translation)
 through the nine_ project.
 
 .. _`download this script`: https://raw.github.com/nandoflorestan/releaser/master/release_new_version.py
