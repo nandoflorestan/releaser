@@ -84,6 +84,7 @@ class ReleaseStep(object):
 
 class CommandStep(ReleaseStep):
     '''Abstract base class for release steps... that executes a command.'''
+
     def __call__(self):
         self._execute_or_complain(self.COMMAND)  # sets self.success
 
@@ -117,8 +118,9 @@ class Releaser(object):
             try:
                 step()
             except StopRelease as e:
-                self.log.critical('Release process stopped at step {0}:\n{1}'
-                    .format(step, e))
+                self.log.critical(
+                    'Release process stopped at step {0}:\n{1}'.format(
+                        step, e))
                 self.rewind()
                 from sys import exit
                 exit(step.ERROR_CODE)
@@ -131,7 +133,8 @@ class Releaser(object):
                     self.non_rewindable.append(step.no_rollback)
                 elif step.success and hasattr(step, 'rollback'):
                     self.rewindable.append(step)
-        self.log.info('Successfully released version {0}. '
+        self.log.info(
+            'Successfully released version {0}. '
             'Sorry for the convenience, mcdonc!'.format(self.the_version))
 
     def rewind(self):
@@ -184,7 +187,7 @@ class Releaser(object):
         self.log.debug('Version being released: {0}'.format(val))
 
     @property
-    def future_version(self):  # 0.1.3dev (development version after release)
+    def future_version(self):  # 0.1.3dev1 (development version after release)
         parts = self.the_version.split('.')
         parts[-1] = str(int(parts[-1]) + 1)
-        return '.'.join(parts) + 'dev'
+        return '.'.join(parts) + 'dev1'

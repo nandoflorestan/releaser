@@ -6,7 +6,7 @@ import requests
 from bag.check_rst import check_rst_file
 from bag.console import bool_input
 from nine import filter, input, nine
-from path import path as pathpy
+from path import path as pathpy  # TODO Switch to pathlib
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
 
@@ -121,7 +121,7 @@ class SetVersionNumberInteractively(ReleaseStep):
     def __call__(self):
         releaser = self.releaser
         path = releaser.config['version_file']
-        keyword = releaser.config['version_keyword']
+        keyword = releaser.config.get('version_keyword', 'version')
         releaser.old_version = version_in_python_source_file(
             path, keyword=keyword)
         print('Current version: {0}'.format(releaser.old_version))
@@ -153,21 +153,22 @@ class PypiUpload(CommandStep):
 
 class SetFutureVersion(ReleaseStep):
     '''Replaces the version number in the configured source code file with
-    the future version number (the one ending in 'dev').
+    the future version number (the one ending in 'dev1').
     '''
     ERROR_CODE = 9
 
     def __call__(self):
         releaser = self.releaser
         path = releaser.config['version_file']
-        keyword = releaser.config['version_keyword']
+        keyword = releaser.config.get('version_keyword', 'version')
         # If the SetVersionNumberInteractively step is disabled for debugging,
         # we can still execute the current step, by populating the_version:
         if releaser.the_version is None:
             releaser._the_version = version_in_python_source_file(
                 path, keyword=keyword)
-        self.log.info('Ready for the next development cycle! Setting version '
-              + releaser.future_version)
+        self.log.info(
+            'Ready for the next development cycle! Setting version '
+            + releaser.future_version)
         version_in_python_source_file(
             path, keyword=keyword, replace=releaser.future_version)
         self._succeed()
