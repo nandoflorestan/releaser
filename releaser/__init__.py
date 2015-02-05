@@ -187,7 +187,7 @@ class Releaser(object):
         self.log.debug('Version being released: {0}'.format(val))
 
     @property
-    def future_version(self):  # 0.1.3dev1 (development version after release)
+    def future_version(self):  # 0.1.3.dev1 (development version after release)
         parts = self.the_version.split('.')
         parts[-1] = str(int(parts[-1]) + 1)
-        return '.'.join(parts) + 'dev1'
+        return '.'.join(parts) + '.dev1'
