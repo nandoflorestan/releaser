@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 from . import ReleaseStep, CommandStep, StopRelease
 
-__all__ = ('get_current_branch', 'EnsureGitClean', 'EnsureGitBranch',
+__all__ = ('EnsureGitClean', 'EnsureGitBranch',
     'GitCommitVersionNumber', 'GitTag', 'GitPush', 'GitPushTags')
 
 
@@ -28,18 +28,17 @@ class EnsureGitClean(ReleaseStep):
         self._succeed()
 
 
-def get_current_branch():
-    with open('.git/HEAD') as f:
-        return f.read().strip().split('/')[-1]
-
-
 class EnsureGitBranch(ReleaseStep):
     '''I must be in the branch specified in config.'''
     ERROR_CODE = 51
 
+    def _get_current_branch(self):
+        branch = self._execute_or_complain('git rev-parse --abbrev-ref HEAD')
+        return None if branch == 'HEAD' else branch
+
     def __call__(self):
         required = self.config.get('branch', 'master')
-        branch = get_current_branch()
+        branch = self._get_current_branch()
         if branch != required:
             raise StopRelease('You are in branch "{0}", but should be '
                 'in branch "{1}" in order to make a release.'.format(
