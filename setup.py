@@ -16,8 +16,9 @@ def content_of(*files):
             content.append(stream.read())
     return '\n'.join(content)
 
-dependencies = ['nine > 0.3.2', 'bag > 0.3.7', 'docutils',
-    'grimace', 'path.py', 'requests']
+dependencies = [
+    'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace', 'path.py',
+    'requests']
 
 setup(
     name="releaser",
@@ -45,12 +46,13 @@ setup(
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     keywords=['python', 'software', 'release', 'releaser', 'automation',
               'git', 'hg', 'setup.py', 'setuptools', 'distribute',
-             ],
+              ],
     packages=find_packages(),
     include_package_data=True,
     # test_suite='releaser.tests',

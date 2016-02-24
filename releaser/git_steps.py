@@ -5,13 +5,13 @@ from __future__ import (absolute_import, division, print_function,
 from . import ReleaseStep, CommandStep, StopRelease
 
 __all__ = ('EnsureGitClean', 'EnsureGitBranch',
-    'GitCommitVersionNumber', 'GitTag', 'GitPush', 'GitPushTags')
+           'GitCommitVersionNumber', 'GitTag', 'GitPush', 'GitPushTags')
 
 
 class EnsureGitClean(ReleaseStep):
-    '''Ensures we are NOT in a detached head and
-    there are no uncommitted changes in tracked files.
-    '''
+    """Ensures we are NOT in a detached head and
+        there are no uncommitted changes in tracked files.
+        """
     ERROR_CODE = 52
 
     def __call__(self):
@@ -29,7 +29,7 @@ class EnsureGitClean(ReleaseStep):
 
 
 class EnsureGitBranch(ReleaseStep):
-    '''I must be in the branch specified in config.'''
+    """I must be in the branch specified in config."""
     ERROR_CODE = 51
 
     def _get_current_branch(self):
@@ -40,16 +40,17 @@ class EnsureGitBranch(ReleaseStep):
         required = self.config.get('branch', 'master')
         branch = self._get_current_branch()
         if branch != required:
-            raise StopRelease('You are in branch "{0}", but should be '
+            raise StopRelease(
+                'You are in branch "{0}", but should be '
                 'in branch "{1}" in order to make a release.'.format(
                     branch, required))
         self._succeed()
 
 
 class GitCommitVersionNumber(ReleaseStep):
-    '''Creates a git commit with only one alteration: the new version number.
-    Can rollback().
-    '''
+    """Creates a git commit with only one alteration: the new version number.
+        Can rollback().
+        """
     COMMAND = 'git commit -a -m "{0}"'
     ERROR_CODE = 53
 
@@ -69,8 +70,7 @@ class GitCommitVersionNumber(ReleaseStep):
 
 
 class GitTag(ReleaseStep):
-    '''Tags the current git commit with the new version number. Can rollback().
-    '''
+    "Tags the current git commit with the new version number. Can rollback()."
     COMMAND = 'git tag -a v{0} -m "Version {0}"'
     ERROR_CODE = 54
     stop_on_failure = False
@@ -112,7 +112,7 @@ class GitPush(ReleaseStep):
 
 
 class GitPushTags(CommandStep):
-    '''Pushes local tags to the remote repository. Can rollback().'''
+    """Pushes local tags to the remote repository. Can rollback()."""
     COMMAND = 'git push --tags'
     ERROR_CODE = 56
     stop_on_failure = False

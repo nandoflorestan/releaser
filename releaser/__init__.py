@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-'''Framework for releasing Python software with variable steps in the
-release process.
-'''
+"""Framework for releasing Python software with variable steps in the
+    release process.
+    """
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -16,20 +16,20 @@ from .regex import error_in_version
 
 
 class StopRelease(RuntimeError):
-    '''Release steps should raise this exception to stop the whole program.'''
+    """Release steps should raise this exception to stop the whole program."""
 
 
 @nine
 class ReleaseStep(object):
-    '''Abstract base class for release steps.'''
+    """Abstract base class for release steps."""
     ERROR_CODE = 1
     success = None
     stop_on_failure = True
 
     def __call__(self):
-        '''Override this method to do the main work of the release step.
-        On error, StopRelease should be raised.
-        '''
+        """Override this method to do the main work of the release step.
+            On error, StopRelease should be raised.
+            """
         raise StopRelease('Step not implemented.')
 
     def _succeed(self):
@@ -83,7 +83,7 @@ class ReleaseStep(object):
 
 
 class CommandStep(ReleaseStep):
-    '''Abstract base class for release steps... that executes a command.'''
+    """Abstract base class for release steps... that executes a command."""
 
     def __call__(self):
         self._execute_or_complain(self.COMMAND)  # sets self.success
@@ -155,8 +155,8 @@ class Releaser(object):
             try:
                 step.rollback()
             except Exception as e:
-                self.log.error('Could not roll back step {0}:\n{1}'
-                    .format(step, str(e)))
+                self.log.error('Could not roll back step {0}:\n{1}'.format(
+                    step, str(e)))
 
     _old_version = None    # 0.1.2dev (exists when the program starts)
     _the_version = None    # 0.1.2    (the version being released)

@@ -10,15 +10,16 @@ from path import path as pathpy  # TODO Switch to pathlib
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
 
-__all__ = ('Shell', 'CheckRstFiles', 'InteractivelyApproveDistribution',
-     'InteractivelyEnsureChangesDocumented', 'CheckTravis',
+__all__ = (
+    'Shell', 'CheckRstFiles', 'InteractivelyApproveDistribution',
+    'InteractivelyEnsureChangesDocumented', 'CheckTravis',
     'SetVersionNumberInteractively', 'PypiRegister', 'PypiUpload',
     'SetFutureVersion', 'ErrorStep')
 
 
 @nine
 class Shell(ReleaseStep):
-    '''Runs some shell command.'''
+    """Runs some shell command."""
     ERROR_CODE = 2
 
     def __init__(self, command, stop_on_failure=True):
@@ -34,10 +35,10 @@ class Shell(ReleaseStep):
 
 
 class CheckRstFiles(ReleaseStep):
-    '''Helps keep documentation correct by verifying .rst documentation files.
-    If files are not provided to the constructor, recursively finds *.rst files
-    in the current directory and subdirectories.
-    '''
+    """Helps keep documentation correct by verifying .rst documentation files.
+        If files are not provided to the constructor, recursively finds
+        *.rst files in the current directory and subdirectories.
+        """
     ERROR_CODE = 4
 
     def __init__(self, *files):
@@ -49,14 +50,15 @@ class CheckRstFiles(ReleaseStep):
             self.log.info('Checking ' + path)
             warnings = check_rst_file(path)
             if warnings:
-                raise StopRelease('There are errors in {0}:\n{1}'.format(path,
-                    '\n'.join([str(w) for w in warnings])))
+                raise StopRelease(
+                    'There are errors in {0}:\n{1}'.format(
+                        path, '\n'.join([str(w) for w in warnings])))
 
 
 class InteractivelyApproveDistribution(ReleaseStep):
-    '''Generate a source distribution and let the user verify that
-    all files are in there.
-    '''
+    """Generate a source distribution and let the user verify that
+        all files are in there.
+        """
     ERROR_CODE = 5
 
     def __call__(self):
@@ -68,7 +70,8 @@ class InteractivelyApproveDistribution(ReleaseStep):
         print("your chance to open the new archive (in the 'dist' directory)")
         print("and check that all files are in there.")
         if not bool_input("Do you approve the archive contents?"):
-            raise StopRelease('Source distribution content not approved.\n'
+            raise StopRelease(
+                'Source distribution content not approved.\n'
                 'If the distribution is missing some files,\n'
                 "try correcting your MANIFEST.in file according to\n"
                 "http://docs.python.org/3/distutils/sourcedist.html"
@@ -86,9 +89,9 @@ class InteractivelyEnsureChangesDocumented(ReleaseStep):
 
 
 class CheckTravis(ReleaseStep):
-    '''Checks the status, on travis-ci.org, of the latest build of a
-    software project in a certain branch.
-    '''
+    """Checks the status, on travis-ci.org, of the latest build of a
+        software project in a certain branch.
+        """
     ERROR_CODE = 91
     URL = 'https://api.travis-ci.org/repos/' \
           '{github_user}/{github_repository}/builds'
@@ -113,9 +116,9 @@ class CheckTravis(ReleaseStep):
 
 
 class SetVersionNumberInteractively(ReleaseStep):
-    '''Asks the user for the new version number and writes it onto
-    the configured source code file.
-    '''
+    """Asks the user for the new version number and writes it onto
+        the configured source code file.
+        """
     ERROR_CODE = 6
 
     def __call__(self):
@@ -152,9 +155,9 @@ class PypiUpload(CommandStep):
 
 
 class SetFutureVersion(ReleaseStep):
-    '''Replaces the version number in the configured source code file with
-    the future version number (the one ending in 'dev1').
-    '''
+    """Replaces the version number in the configured source code file with
+        the future version number (the one ending in 'dev1').
+        """
     ERROR_CODE = 9
 
     def __call__(self):
@@ -167,14 +170,14 @@ class SetFutureVersion(ReleaseStep):
             releaser._the_version = version_in_python_source_file(
                 path, keyword=keyword)
         self.log.info(
-            'Ready for the next development cycle! Setting version '
-            + releaser.future_version)
+            'Ready for the next development cycle! Setting version ' +
+            releaser.future_version)
         version_in_python_source_file(
             path, keyword=keyword, replace=releaser.future_version)
         self._succeed()
 
 
 class ErrorStep(CommandStep):
-    '''Raises an exception to force a rollback. Good for testing.'''
+    """Raises an exception to force a rollback. Good for testing."""
     COMMAND = 'thisCommandDontExist'
     ERROR_CODE = 255
