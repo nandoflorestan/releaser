@@ -27,7 +27,7 @@ setup(
     'some software.',
     long_description=content_of('README.rst', 'CHANGES.rst'),
     url='https://github.com/nandoflorestan/releaser',
-    version='1.1.0',
+    version='1.1.1.dev1',
     license='MIT',
     author='Nando Florestan',
     author_email="nandoflorestan@gmail.com",
