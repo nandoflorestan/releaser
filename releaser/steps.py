@@ -12,9 +12,10 @@ from .regex import version_in_python_source_file
 
 __all__ = (
     'Shell', 'CheckRstFiles', 'InteractivelyApproveDistribution',
+    'InteractivelyApproveWheel', 'PypiUploadWheel',
     'InteractivelyEnsureChangesDocumented', 'CheckTravis',
     'SetVersionNumberInteractively', 'PypiRegister', 'PypiUpload',
-    'SetFutureVersion', 'ErrorStep')
+    'SetFutureVersion', 'ErrorStep', 'Print')
 
 
 @nine
@@ -80,7 +81,24 @@ class InteractivelyApproveDistribution(ReleaseStep):
                 "#specifying-the-files-to-distribute")
 
 
+class InteractivelyApproveWheel(ReleaseStep):
+    """Generate wheel and let user verify it before proceeding."""
+
+    COMMAND = 'python setup.py bdist_wheel'
+    ERROR_CODE = 10
+
+    def __call__(self):
+        self._execute_or_complain(self.COMMAND)  # sets self.success
+        # TODO: Optionally xdg-open the wheel for convenience
+        print("A temporary wheel has been generated. Since it is just a\n"
+              "zip file, you should now open it (from the 'dist' directory)"
+              "\nand check that all files are in there.")
+        if not bool_input("Do you approve the wheel contents?"):
+            raise StopRelease('Wheel content not approved.')
+
+
 class InteractivelyEnsureChangesDocumented(ReleaseStep):
+    """Step that just bugs the user to verify the CHANGES file."""
 
     ERROR_CODE = 3
 
@@ -159,6 +177,21 @@ class PypiUpload(CommandStep):
         return "Server response (200): OK" in command_output
 
 
+class PypiUploadWheel(CommandStep):
+    """Generate wheel and upload it to pypi."""
+
+    COMMAND = 'python setup.py bdist_wheel upload'
+
+    # COMMAND = 'python setup.py upload'
+    # ...fails with "error: No dist file created in earlier command"
+
+    ERROR_CODE = 11
+    no_rollback = 'Cannot roll back the wheel upload to http://pypi.python.org'
+
+    def _validate_command_output(self, command_output):
+        return "Server response (200): OK" in command_output
+
+
 class SetFutureVersion(ReleaseStep):
     """Set the development version number in source code after release."""
 
@@ -186,3 +219,14 @@ class ErrorStep(CommandStep):
 
     COMMAND = 'thisCommandDontExist'
     ERROR_CODE = 255
+
+
+class Print(ReleaseStep):
+    """Just print a message on the screen and on the log file."""
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __call__(self):
+        self.log.info(self.msg)
+        self.success = True

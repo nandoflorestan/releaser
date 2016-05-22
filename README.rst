@@ -2,17 +2,20 @@
 Easily write a script to release a new version, with variable steps.
 ====================================================================
 
-Releasing software usually is a pain. There are several checks that
+Releasing software is a painful process. There are several checks that
 the developer must make for each new version. The developer is prone
 to forget one of them or perform the checks out of the optimal order.
 As Murphy would have it, many buggy releases are created for this reason.
 
 *releaser* is a little framework the developer can use to write a script to
-guide him through the new version release process, such that the checks
+guide him through the new version release process, such that many checks
 are performed automatically. (Each software project will have
 a release script that differs a little bit from others.)
 
-Many steps of a common release process have already been implemented,
+Now that I use *releaser* I can release my Python libraries more quickly and
+easily, so I find that I release more often.
+
+Many steps of a common Python release process have already been implemented,
 and you can easily write your own. If you do write a step, please donate it
 to the project by making a pull request on GitHub_.
 

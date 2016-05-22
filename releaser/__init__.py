@@ -85,13 +85,14 @@ class ReleaseStep(object):
 
 
 class CommandStep(ReleaseStep):
-    """Abstract base class for release steps... that executes a command."""
+    """Abstract base class for any release step that runs a command."""
 
     def __call__(self):
         self._execute_or_complain(self.COMMAND)  # sets self.success
 
 
 class Releaser(object):
+    """Class the manages the whole release process."""
 
     def __init__(self, config, *steps):
         self.created_tags = []

@@ -19,7 +19,7 @@ def content_of(*files):
 
 dependencies = [
     'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace == 0.0.14', 'path.py',
-    'requests']
+    'requests', 'wheel']
 
 setup(
     name="releaser",
