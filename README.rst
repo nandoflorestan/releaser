@@ -13,7 +13,7 @@ are performed automatically. (Each software project will have
 a release script that differs a little bit from others.)
 
 Now that I use *releaser* I can release my Python libraries more quickly and
-easily, so I find that I release more often.
+easily, so I find that I release more often. Well worth the initial investment.
 
 Many steps of a common Python release process have already been implemented,
 and you can easily write your own. If you do write a step, please donate it
@@ -37,13 +37,13 @@ Simply `download this script`_ to the root of your project::
     chmod +x ./release_new_version.py
     git add release_new_version.py
 
-Then edit the script if necessary. (You can `read it here`_.)
+Then edit the script as necessary. (You can `read it here`_.)
 
 When you execute the script, the configured steps are executed in order. The
 screen shows little information, but you have all details in the log file.
 
-Some of the steps require human intervention; for instance, you may be asked to
-verify the contents of a zip file before it is uploaded to pypi_.
+Some of the steps are interactive; for instance, you may be asked to
+verify the contents of a zip or wheel file before it is uploaded to pypi_.
 *releaser* also makes you type the number of the version being released, which
 is then validated (for instance, it is compared to the current version), then
 written to a source code file that belongs to your project.
