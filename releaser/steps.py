@@ -15,7 +15,7 @@ __all__ = (
     'InteractivelyApproveWheel', 'PypiUploadWheel',
     'InteractivelyEnsureChangesDocumented', 'CheckTravis',
     'SetVersionNumberInteractively', 'PypiRegister', 'PypiUpload',
-    'SetFutureVersion', 'ErrorStep', 'Print')
+    'SetFutureVersion', 'ErrorStep', 'Warn')
 
 
 @nine
@@ -221,12 +221,12 @@ class ErrorStep(CommandStep):
     ERROR_CODE = 255
 
 
-class Print(ReleaseStep):
-    """Just print a message on the screen and on the log file."""
+class Warn(ReleaseStep):
+    """Just print a warning on the screen and on the log file."""
 
     def __init__(self, msg):
         self.msg = msg
 
     def __call__(self):
-        self.log.info(self.msg)
+        self.log.warn(self.msg)
         self.success = True
