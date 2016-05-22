@@ -8,6 +8,7 @@ from setuptools import setup, find_packages
 
 
 def content_of(*files):
+    """Given 1 or more file paths, returns their content in a single string."""
     import codecs
     here = os.path.abspath(os.path.dirname(__file__))
     content = []
@@ -17,7 +18,7 @@ def content_of(*files):
     return '\n'.join(content)
 
 dependencies = [
-    'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace', 'path.py',
+    'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace > 0.0.13', 'path.py',
     'requests']
 
 setup(
@@ -32,7 +33,6 @@ setup(
     author_email="nandoflorestan@gmail.com",
     install_requires=dependencies,
     classifiers=[  # http://pypi.python.org/pypi?:action=list_classifiers
-        # 'Development Status :: 4 - Beta',
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
