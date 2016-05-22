@@ -18,7 +18,7 @@ def content_of(*files):
     return '\n'.join(content)
 
 dependencies = [
-    'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace > 0.0.13', 'path.py',
+    'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace == 0.0.14', 'path.py',
     'requests']
 
 setup(

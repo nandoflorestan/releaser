@@ -20,6 +20,7 @@ __all__ = (
 @nine
 class Shell(ReleaseStep):
     """Runs some shell command."""
+
     ERROR_CODE = 2
 
     def __init__(self, command, stop_on_failure=True):
@@ -35,10 +36,12 @@ class Shell(ReleaseStep):
 
 
 class CheckRstFiles(ReleaseStep):
-    """Helps keep documentation correct by verifying .rst documentation files.
-        If files are not provided to the constructor, recursively finds
-        *.rst files in the current directory and subdirectories.
-        """
+    """Helps keep documentation correct by verifying .rst files.
+
+    If files are not provided to the constructor, recursively finds
+    *.rst files in the current directory and subdirectories.
+    """
+
     ERROR_CODE = 4
 
     def __init__(self, *files):
@@ -56,9 +59,8 @@ class CheckRstFiles(ReleaseStep):
 
 
 class InteractivelyApproveDistribution(ReleaseStep):
-    """Generate a source distribution and let the user verify that
-        all files are in there.
-        """
+    """Generate a source distribution and let the user verify it."""
+
     ERROR_CODE = 5
 
     def __call__(self):
@@ -79,6 +81,7 @@ class InteractivelyApproveDistribution(ReleaseStep):
 
 
 class InteractivelyEnsureChangesDocumented(ReleaseStep):
+
     ERROR_CODE = 3
 
     def __call__(self):
@@ -89,9 +92,8 @@ class InteractivelyEnsureChangesDocumented(ReleaseStep):
 
 
 class CheckTravis(ReleaseStep):
-    """Checks the status, on travis-ci.org, of the latest build of a
-        software project in a certain branch.
-        """
+    """Check the status, on travis-ci.org, of the latest build."""
+
     ERROR_CODE = 91
     URL = 'https://api.travis-ci.org/repos/' \
           '{github_user}/{github_repository}/builds'
@@ -116,9 +118,8 @@ class CheckTravis(ReleaseStep):
 
 
 class SetVersionNumberInteractively(ReleaseStep):
-    """Asks the user for the new version number and writes it onto
-        the configured source code file.
-        """
+    """Ask user for the new version number and write it on the source code."""
+
     ERROR_CODE = 6
 
     def __call__(self):
@@ -136,6 +137,8 @@ class SetVersionNumberInteractively(ReleaseStep):
 
 
 class PypiRegister(CommandStep):
+    """Register the new version on pypi."""
+
     COMMAND = 'python setup.py register'
     ERROR_CODE = 7
     no_rollback = 'The release has been created on http://pypi.python.org.\n' \
@@ -146,6 +149,8 @@ class PypiRegister(CommandStep):
 
 
 class PypiUpload(CommandStep):
+    """Generate a source distribution and send it to pypi."""
+
     COMMAND = 'python setup.py sdist upload'
     ERROR_CODE = 8
     no_rollback = 'Cannot roll back the sdist upload to http://pypi.python.org'
@@ -155,9 +160,8 @@ class PypiUpload(CommandStep):
 
 
 class SetFutureVersion(ReleaseStep):
-    """Replaces the version number in the configured source code file with
-        the future version number (the one ending in 'dev1').
-        """
+    """Set the development version number in source code after release."""
+
     ERROR_CODE = 9
 
     def __call__(self):
@@ -178,6 +182,7 @@ class SetFutureVersion(ReleaseStep):
 
 
 class ErrorStep(CommandStep):
-    """Raises an exception to force a rollback. Good for testing."""
+    """Raise an exception to force a rollback. Good for testing."""
+
     COMMAND = 'thisCommandDontExist'
     ERROR_CODE = 255

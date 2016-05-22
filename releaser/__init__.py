@@ -22,14 +22,16 @@ class StopRelease(RuntimeError):
 @nine
 class ReleaseStep(object):
     """Abstract base class for release steps."""
+
     ERROR_CODE = 1
     success = None
     stop_on_failure = True
 
     def __call__(self):
         """Override this method to do the main work of the release step.
-            On error, StopRelease should be raised.
-            """
+
+        On error, StopRelease should be raised.
+        """
         raise StopRelease('Step not implemented.')
 
     def _succeed(self):
@@ -90,6 +92,7 @@ class CommandStep(ReleaseStep):
 
 
 class Releaser(object):
+
     def __init__(self, config, *steps):
         self.created_tags = []
         self.config = config

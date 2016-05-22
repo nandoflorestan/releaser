@@ -9,9 +9,12 @@ __all__ = ('EnsureGitClean', 'EnsureGitBranch',
 
 
 class EnsureGitClean(ReleaseStep):
-    """Ensures we are NOT in a detached head and
-        there are no uncommitted changes in tracked files.
-        """
+    """Ensures git state is appropriate to start a release.
+
+    Meaning we are NOT in a detached head and
+    there are no uncommitted changes in tracked files.
+    """
+
     ERROR_CODE = 52
 
     def __call__(self):
@@ -30,6 +33,7 @@ class EnsureGitClean(ReleaseStep):
 
 class EnsureGitBranch(ReleaseStep):
     """I must be in the branch specified in config."""
+
     ERROR_CODE = 51
 
     def _get_current_branch(self):
@@ -49,8 +53,10 @@ class EnsureGitBranch(ReleaseStep):
 
 class GitCommitVersionNumber(ReleaseStep):
     """Creates a git commit with only one alteration: the new version number.
-        Can rollback().
-        """
+
+    Can rollback().
+    """
+
     COMMAND = 'git commit -a -m "{0}"'
     ERROR_CODE = 53
 
@@ -70,7 +76,11 @@ class GitCommitVersionNumber(ReleaseStep):
 
 
 class GitTag(ReleaseStep):
-    "Tags the current git commit with the new version number. Can rollback()."
+    """Tags the current git commit with the new version number.
+
+    Can rollback().
+    """
+
     COMMAND = 'git tag -a v{0} -m "Version {0}"'
     ERROR_CODE = 54
     stop_on_failure = False
@@ -91,6 +101,8 @@ class GitTag(ReleaseStep):
 
 
 class GitPush(ReleaseStep):
+    """Does ``git push``. This critical step has no rollback."""
+
     COMMAND = 'git push'
     ERROR_CODE = 55
     stop_on_failure = False  # It should be easy to 'git push' afterwards
@@ -113,6 +125,7 @@ class GitPush(ReleaseStep):
 
 class GitPushTags(CommandStep):
     """Pushes local tags to the remote repository. Can rollback()."""
+
     COMMAND = 'git push --tags'
     ERROR_CODE = 56
     stop_on_failure = False

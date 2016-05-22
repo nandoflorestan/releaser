@@ -26,10 +26,10 @@ config = dict(
 Releaser(
     config,
     Shell('python setup.py test'),  # First of all ensure tests pass
+    # TODO IMPLEMENT BuildSphinxDocumentation,
     CheckRstFiles,  # Documentation: recursively verify ALL .rst files, or:
     # CheckRstFiles('README.rst', 'CHANGES.rst', 'LICENSE.rst'),  # just a few.
     # TODO IMPLEMENT CompileAndVerifyTranslations,
-    # TODO IMPLEMENT BuildSphinxDocumentation,
     # TODO IMPLEMENT Tell the user to upload the built docs (give URL)
     EnsureGitClean,   # There are no uncommitted changes in tracked files.
     EnsureGitBranch,  # I must be in the branch specified in config

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Deals with version numbers through literate regular expressions."""
+
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import codecs
@@ -8,7 +10,8 @@ from bag.text import content_of
 from grimace import RE  # https://github.com/benlast/grimace/wiki/Documentation
 
 
-VERSION_NUMBER = str(RE().one_or_more.digits.dot.one_or_more.digits
+VERSION_NUMBER = str(
+    RE().one_or_more.digits.dot.one_or_more.digits
     .then.any_number_of.any_of('0123456789-.()abcdefghijklmnopqrstuvwxyz'))
 VERSION_NUMBER_RE = re.compile(VERSION_NUMBER)
 VERSION_VALIDATOR = '^' + VERSION_NUMBER + '$'
@@ -16,7 +19,7 @@ VERSION_VALIDATOR_RE = re.compile(VERSION_VALIDATOR)
 
 
 def error_in_version(val, allow_dev=True):
-    '''Validates a version number. Returns None if valid.'''
+    """Validate a version number. Returns None if valid."""
     if not VERSION_VALIDATOR_RE.match(val):
         return '"{0}" is not a valid version number.'.format(val)
     if not allow_dev:
@@ -30,11 +33,14 @@ QUOTED_VERSION = SOME_QUOTE + '(' + VERSION_NUMBER + ')' + SOME_QUOTE
 
 
 def version_in_python_source(text, replace=None, keyword='version'):
-    '''If ``replace`` is None, returns the version number found in ``text``.
+    """Given a string, finds or replaces the version number in it.
+
+    If ``replace`` is None, returns the version number found in ``text``.
     Else, returns an updated ``text`` (with the version number specified in
     the ``replace`` argument).
-    '''
-    PYTHON_VERSION_LINE = str(RE().zero_or_more.whitespace
+    """
+    PYTHON_VERSION_LINE = str(
+        RE().zero_or_more.whitespace
         .between(0, 2).underscore.then(keyword).then.between(0, 2).underscore
         .then.zero_or_more.whitespace.then('=').then.zero_or_more.whitespace
         .then.regex(QUOTED_VERSION).then.zero_or_more.whitespace)
@@ -59,9 +65,11 @@ def version_in_python_source(text, replace=None, keyword='version'):
 
 def version_in_python_source_file(path, replace=None, keyword='version',
                                   encoding='utf-8'):
-    '''If replace is None, returns the version number found in file ``path``.
+    """Given a file path, returns or replaces the version number in it.
+
+    If replace is None, returns the version number found in file ``path``.
     Else, replaces the version number with the one specified in ``replace``.
-    '''
+    """
     ret = version_in_python_source(content_of(path, encoding=encoding),
                                    replace=replace, keyword=keyword)
     if replace:
