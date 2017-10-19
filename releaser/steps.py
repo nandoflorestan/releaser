@@ -14,7 +14,7 @@ __all__ = (
     'Shell', 'CheckRstFiles', 'InteractivelyApproveDistribution',
     'InteractivelyApproveWheel', 'PypiUploadWheel',
     'InteractivelyEnsureChangesDocumented', 'CheckTravis',
-    'SetVersionNumberInteractively', 'PypiRegister', 'PypiUpload',
+    'SetVersionNumberInteractively', 'PypiUpload',
     'SetFutureVersion', 'ErrorStep', 'Warn')
 
 
@@ -152,18 +152,6 @@ class SetVersionNumberInteractively(ReleaseStep):
         version_in_python_source_file(
             path, keyword=keyword, replace=releaser.the_version)
         self._succeed()
-
-
-class PypiRegister(CommandStep):
-    """Register the new version on pypi."""
-
-    COMMAND = 'python setup.py register'
-    ERROR_CODE = 7
-    no_rollback = 'The release has been created on http://pypi.python.org.\n' \
-        'Unfortunately, the release must be removed manually.'
-
-    def _validate_command_output(self, command_output):
-        return "Server response (200): OK" in command_output
 
 
 class PypiUpload(CommandStep):
