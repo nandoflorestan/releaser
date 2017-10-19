@@ -43,7 +43,6 @@ Releaser(
     SetVersionNumberInteractively,  # Ask for version and write to source code
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
-    PypiRegister,           # Create the new release at https://pypi.python.org
     PypiUpload,   # Make and upload a source .tar.gz to https://pypi.python.org
     PypiUploadWheel,  # Make and upload source wheel to https://pypi.python.org
 
