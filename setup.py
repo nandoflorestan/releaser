@@ -17,9 +17,16 @@ def content_of(*files):
             content.append(stream.read())
     return '\n'.join(content)
 
-dependencies = [
-    'nine > 0.3.2', 'bag > 0.3.7', 'docutils', 'grimace == 0.0.14', 'path.py',
-    'requests', 'wheel']
+
+dependencies = [  # TODO UPGRADE THEM
+    'nine > 0.3.2',  # TODO REMOVE
+    'bag > 0.3.7',
+    'docutils < 0.13a',
+    'grimace == 0.0.14',
+    'path.py < 10.0a',
+    'requests',
+    'wheel',
+]
 
 setup(
     name="releaser",
@@ -39,14 +46,13 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
