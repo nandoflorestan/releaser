@@ -6,7 +6,7 @@ import requests
 from bag.check_rst import check_rst_file
 from bag.console import bool_input
 from nine import filter, input, nine
-from path import path as pathpy  # TODO Switch to pathlib
+from path import Path as pathpy  # TODO Switch to pathlib
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
 
