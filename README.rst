@@ -83,7 +83,7 @@ It's easy to `read the source code`_.
 A popular alternative to *releaser* is the project `zest.releaser`_. It differs
 in features, manners of extensibility and support for Python versions.
 
-*releaser* supports Python 2.6, 2.7, 3.2, 3.3, 3.4 and 3.5 (without translation)
+*releaser* supports Python 2.7 and 3.3 to 3.8 (without translation)
 through the nine_ project.
 
 .. _`download this script`: https://raw.github.com/nandoflorestan/releaser/master/release_new_version.py
