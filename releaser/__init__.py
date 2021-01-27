@@ -24,7 +24,7 @@ class ReleaseStep:
 
         On error, StopRelease should be raised.
         """
-        raise StopRelease('Step not implemented.')
+        raise StopRelease("Step not implemented.")
 
     def _succeed(self):
         self.success = True
@@ -34,21 +34,24 @@ class ReleaseStep:
         if self.stop_on_failure:
             raise StopRelease(msg)
         else:
-            self.log.warning(msg + '\nContinuing anyway.')
+            self.log.warning(msg + "\nContinuing anyway.")
 
-    def _execute(self, command, input='', shell=True):
-        p = subprocess.Popen(command, shell=shell,
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE,
-                             close_fds=not platform.startswith('win'))
+    def _execute(self, command, input="", shell=True):
+        p = subprocess.Popen(
+            command,
+            shell=shell,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            close_fds=not platform.startswith("win"),
+        )
         i, o, e = (p.stdin, p.stdout, p.stderr)
         if input:
             i.write(input)
         i.close()
         return_code = p.wait()
-        normal_output = o.read().strip().decode('utf-8')
-        error_output = e.read().strip().decode('utf-8')
+        normal_output = o.read().strip().decode("utf-8")
+        error_output = e.read().strip().decode("utf-8")
         o.close()
         e.close()
         if normal_output:
@@ -57,11 +60,16 @@ class ReleaseStep:
             self.log.error(error_output)
         return return_code, normal_output + error_output
 
-    def _execute_or_complain(self, command, input='', shell=True,
-                             msg='Command failed with code {code}: {cmd}'):
+    def _execute_or_complain(
+        self,
+        command,
+        input="",
+        shell=True,
+        msg="Command failed with code {code}: {cmd}",
+    ):
         return_code, text = self._execute(command)
         if return_code == 0:
-            if hasattr(self, '_validate_command_output'):
+            if hasattr(self, "_validate_command_output"):
                 if self._validate_command_output(text):
                     self._succeed()
                 else:
@@ -90,10 +98,15 @@ class Releaser:
         self.created_tags = []
         self.config = config
         # Configure logging
-        path = config.get('log_file', 'release.log.utf-8.tmp')
-        screen_level = config.get('verbosity', 'info')
-        self.log = setup_log(path=path, rotating=False, file_mode='w',
-                             disk_level='debug', screen_level=screen_level)
+        path = config.get("log_file", "release.log.utf-8.tmp")
+        screen_level = config.get("verbosity", "info")
+        self.log = setup_log(
+            path=path,
+            rotating=False,
+            file_mode="w",
+            disk_level="debug",
+            screen_level=screen_level,
+        )
         # Convert steps provided by the user into real instances
         self.instances = []
         for step in steps:
@@ -115,47 +128,53 @@ class Releaser:
                 step()
             except StopRelease as e:
                 self.log.critical(
-                    'Release process stopped at step {0}:\n{1}'.format(
-                        step, e))
+                    "Release process stopped at step {0}:\n{1}".format(step, e)
+                )
                 self.rewind()
                 from sys import exit
+
                 exit(step.ERROR_CODE)
             except Exception:
-                self.log.debug('Noooo!!!', exc_info=True)
+                self.log.debug("Noooo!!!", exc_info=True)
                 self.rewind()
                 raise
             else:
-                if step.success and hasattr(step, 'no_rollback'):
+                if step.success and hasattr(step, "no_rollback"):
                     self.non_rewindable.append(step.no_rollback)
-                elif step.success and hasattr(step, 'rollback'):
+                elif step.success and hasattr(step, "rollback"):
                     self.rewindable.append(step)
         self.log.info(
-            'Successfully released version {0}. '
-            'Sorry for the convenience, mcdonc!'.format(self.the_version))
+            "Successfully released version {0}. "
+            "Sorry for the convenience, mcdonc!".format(self.the_version)
+        )
 
     def rewind(self):
         say = self.log.critical
-        say('\n' + screen_header('ROLLBACK', decor='*'))
+        say("\n" + screen_header("ROLLBACK", decor="*"))
         # Some steps offer a warning because they cannot be rolled back.
-        say('\n'.join(self.non_rewindable))              # Display them.
+        say("\n".join(self.non_rewindable))  # Display them.
         if not self.rewindable:
-            say('No steps to roll back, but the release process FAILED.')
+            say("No steps to roll back, but the release process FAILED.")
             return
         steps = list(reversed(self.rewindable))
-        print('I am about to roll back the following steps:\n{0}'.format(
-            ', '.join([str(step) for step in steps])))
-        if not bool_input('Continue?', default=True):
+        print(
+            "I am about to roll back the following steps:\n{0}".format(
+                ", ".join([str(step) for step in steps])
+            )
+        )
+        if not bool_input("Continue?", default=True):
             return
         for step in steps:
-            self.log.critical(screen_header('ROLLBACK {0}'.format(step)))
+            self.log.critical(screen_header("ROLLBACK {0}".format(step)))
             try:
                 step.rollback()
             except Exception as e:
-                self.log.error('Could not roll back step {0}:\n{1}'.format(
-                    step, str(e)))
+                self.log.error(
+                    "Could not roll back step {0}:\n{1}".format(step, str(e))
+                )
 
-    _old_version = None    # 0.1.2dev (exists when the program starts)
-    _the_version = None    # 0.1.2    (the version being released)
+    _old_version = None  # 0.1.2dev (exists when the program starts)
+    _the_version = None  # 0.1.2    (the version being released)
 
     @property
     def old_version(self):
@@ -164,7 +183,7 @@ class Releaser:
     @old_version.setter
     def old_version(self, val):
         self._old_version = val
-        self.log.debug('Old version: {0}'.format(val))
+        self.log.debug("Old version: {0}".format(val))
 
     @property
     def the_version(self):
@@ -178,12 +197,13 @@ class Releaser:
             raise StopRelease(e)
         if parse_version(self.old_version) >= parse_version(val):
             raise StopRelease(
-                'No, the version number must be higher than the current one!')
+                "No, the version number must be higher than the current one!"
+            )
         self._the_version = val
-        self.log.debug('Version being released: {0}'.format(val))
+        self.log.debug("Version being released: {0}".format(val))
 
     @property
     def future_version(self):  # 0.1.3.dev1 (development version after release)
-        parts = self.the_version.split('.')
+        parts = self.the_version.split(".")
         parts[-1] = str(int(parts[-1]) + 1)
-        return '.'.join(parts) + '.dev1'
+        return ".".join(parts) + ".dev1"
