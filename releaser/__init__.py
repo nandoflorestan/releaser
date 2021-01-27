@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
+"""Framework for releasing Python software without forgetting steps."""
 
-"""Framework for releasing Python software with variable steps in the
-    release process.
-    """
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 import subprocess
 from sys import platform
 from pkg_resources import parse_version
 from bag.console import bool_input, screen_header
 from bag.log import setup_log
-from nine import str, nine
 from .regex import error_in_version
 
 
@@ -19,8 +12,7 @@ class StopRelease(RuntimeError):
     """Release steps should raise this exception to stop the whole program."""
 
 
-@nine
-class ReleaseStep(object):
+class ReleaseStep:
     """Abstract base class for release steps."""
 
     ERROR_CODE = 1
@@ -91,7 +83,7 @@ class CommandStep(ReleaseStep):
         self._execute_or_complain(self.COMMAND)  # sets self.success
 
 
-class Releaser(object):
+class Releaser:
     """Class the manages the whole release process."""
 
     def __init__(self, config, *steps):

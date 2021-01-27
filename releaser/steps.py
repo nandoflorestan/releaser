@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 import requests
 from bag.check_rst import check_rst_file
 from bag.console import bool_input
-from nine import filter, input, nine
 from path import Path as pathpy  # TODO Switch to pathlib
 from . import ReleaseStep, StopRelease, CommandStep
 from .regex import version_in_python_source_file
@@ -18,9 +13,8 @@ __all__ = (
     'SetFutureVersion', 'ErrorStep', 'Warn')
 
 
-@nine
 class Shell(ReleaseStep):
-    """Runs some shell command."""
+    """Run some shell command."""
 
     ERROR_CODE = 2
 
@@ -106,7 +100,7 @@ class InteractivelyEnsureChangesDocumented(ReleaseStep):
         if bool_input('Did you remember to update the CHANGES file?'):
             self.log.debug('User says CHANGES file is up to date.')
         else:
-            raise StopRelease('One more joshlabotniked release is avoided.')
+            raise StopRelease('One more joeshlabotniked release is avoided.')
 
 
 class CheckTravis(ReleaseStep):
