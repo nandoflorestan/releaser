@@ -67,7 +67,7 @@ class ReleaseStep:
         shell=True,
         msg="Command failed with code {code}: {cmd}",
     ):
-        return_code, text = self._execute(command)
+        return_code, text = self._execute(command, input, shell)
         if return_code == 0:
             if hasattr(self, "_validate_command_output"):
                 if self._validate_command_output(text):
@@ -76,6 +76,20 @@ class ReleaseStep:
                     self._fail(msg.format(code=return_code, cmd=command))
             else:
                 self._succeed()
+        else:
+            self._fail(msg.format(code=return_code, cmd=command))
+        return text
+
+    def _execute_expect_zero(
+        self,
+        command,
+        input="",
+        shell=True,
+        msg="Command failed with code {code}: {cmd}",
+    ):
+        return_code, text = self._execute(command, input, shell)
+        if return_code == 0:
+            self._succeed()
         else:
             self._fail(msg.format(code=return_code, cmd=command))
         return text
@@ -92,7 +106,7 @@ class CommandStep(ReleaseStep):
 
 
 class Releaser:
-    """Class the manages the whole release process."""
+    """Class that manages the whole release process."""
 
     def __init__(self, config, *steps):
         self.created_tags = []

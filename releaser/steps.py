@@ -75,7 +75,7 @@ class InteractivelyApproveDistribution(ReleaseStep):
         # TODO: Optionally xdg-open the archive for convenience
         # Create the sdist with "-d <output_dir>"  on a temp dir.
         # Delete it at the end.
-        print("A temporary source distribution has been generated. This is")
+        print("The source distribution has been generated. This is")
         print("your chance to open the new archive (in the 'dist' directory)")
         print("and check that all files are in there.")
         if not bool_input("Do you approve the archive contents?"):
@@ -98,7 +98,7 @@ class InteractivelyApproveWheel(ReleaseStep):
         self._execute_or_complain(self.COMMAND)  # sets self.success
         # TODO: Optionally xdg-open the wheel for convenience
         print(
-            "A temporary wheel has been generated. Since it is just a\n"
+            "The wheel has been generated. Since it is just a\n"
             "zip file, you should now open it (from the 'dist' directory)"
             "\nand check that all files are in there."
         )
@@ -164,26 +164,32 @@ class SetVersionNumberInteractively(ReleaseStep):
 
 
 class PypiUpload(CommandStep):
-    """Generate a source distribution and send it to pypi."""
+    """Use *twine* to upload a source distribution to pypi."""
 
-    COMMAND = "python setup.py sdist upload"
     ERROR_CODE = 8
     no_rollback = "Cannot roll back the sdist upload to http://pypi.python.org"
+
+    def __call__(self):
+        name = self.config["github_repository"]
+        version = self.releaser.the_version
+        self._execute_expect_zero(f"twine upload dist/{name}-{version}.tar.gz")
 
     def _validate_command_output(self, command_output):
         return "Server response (200): OK" in command_output
 
 
 class PypiUploadWheel(CommandStep):
-    """Generate wheel and upload it to pypi."""
-
-    COMMAND = "python setup.py bdist_wheel upload"
-
-    # COMMAND = 'python setup.py upload'
-    # ...fails with "error: No dist file created in earlier command"
+    """Use *twine* to upload a wheel to pypi."""
 
     ERROR_CODE = 11
     no_rollback = "Cannot roll back the wheel upload to http://pypi.python.org"
+
+    def __call__(self):
+        name = self.config["github_repository"]
+        version = self.releaser.the_version
+        self._execute_expect_zero(
+            f"twine upload dist/{name}-{version}-py3-none-any.whl"
+        )
 
     def _validate_command_output(self, command_output):
         return "Server response (200): OK" in command_output
