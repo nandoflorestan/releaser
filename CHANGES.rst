@@ -9,7 +9,7 @@ When you upgrade to this version you need to reposition 2 build steps.
 
 **releaser** now uses **twine** to upload packages to pypi. There is no longer
 a need to build a test package before releasing. So these 2 steps which were
-preparation steps:
+preparation steps::
 
     InteractivelyApproveDistribution,  # Generate sdist, let user verify it
     InteractivelyApproveWheel,         # Generate wheel, let user verify it
