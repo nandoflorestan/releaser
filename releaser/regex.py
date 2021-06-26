@@ -30,11 +30,13 @@ SOME_QUOTE = r'["\']'  # single or double quote
 QUOTED_VERSION = SOME_QUOTE + "(" + VERSION_NUMBER + ")" + SOME_QUOTE
 
 
-def version_in_python_source(text, replace=None, keyword="version"):
-    """Given a string, finds or replaces the version number in it.
+def version_in_python_source(
+    text: str, replace: str = "", keyword: str = "version"
+) -> str:
+    """Given a string, find or replace the version number in it.
 
-    If ``replace`` is None, returns the version number found in ``text``.
-    Else, returns an updated ``text`` (with the version number specified in
+    If ``replace`` is None, return the version number found in ``text``.
+    Else, return an updated ``text`` (with the version number specified in
     the ``replace`` argument).
     """
     PYTHON_VERSION_LINE = str(
@@ -66,12 +68,15 @@ def version_in_python_source(text, replace=None, keyword="version"):
 
 
 def version_in_python_source_file(
-    path, replace=None, keyword="version", encoding="utf-8"
-):
-    """Given a file path, returns or replaces the version number in it.
+    path: str,
+    replace: str = "",
+    keyword: str = "version",
+    encoding: str = "utf-8",
+) -> str:
+    """Given a file path, return or replace the version number in it.
 
-    If replace is None, returns the version number found in file ``path``.
-    Else, replaces the version number with the one specified in ``replace``.
+    If replace is empty, return the version number found in file ``path``.
+    Else, replace the version number with the one specified in ``replace``.
     """
     ret = version_in_python_source(
         content_of(path, encoding=encoding), replace=replace, keyword=keyword
@@ -83,5 +88,6 @@ def version_in_python_source_file(
         assert replace == version_in_python_source_file(
             path, keyword=keyword, encoding=encoding
         )
+        return replace
     else:
         return ret

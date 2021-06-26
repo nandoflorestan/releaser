@@ -18,11 +18,10 @@ def content_of(*files):
     return "\n".join(content)
 
 
-dependencies = [  # TODO UPGRADE THEM
+dependencies = [
     "bag > 0.3.7",
-    "docutils < 0.13a",
-    "grimace == 0.0.14",
-    "path.py < 10.0a",  # TODO Switch to pathlib
+    "docutils < 0.18",
+    "grimace == 0.0.14",  # TODO version 0.1.2
     "requests",
     "wheel",
 ]
@@ -62,6 +61,7 @@ setup(
         "setup.py",
         "setuptools",
         "distribute",
+        "pip",
     ],
     packages=find_packages(),
     include_package_data=True,
