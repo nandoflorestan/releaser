@@ -31,7 +31,7 @@ setup(
     description="Automates the process of releasing a new version of " "some software.",
     long_description=content_of("README.rst", "CHANGES.rst"),
     url="https://github.com/nandoflorestan/releaser",
-    version="2.0.1",
+    version="2.0.2.dev1",
     license="MIT",
     author="Nando Florestan",
     author_email="nandoflorestan@gmail.com",
