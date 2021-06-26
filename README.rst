@@ -25,7 +25,7 @@ Installing *releaser*
 
 Activate your virtualenv, then::
 
-    easy_install -UZ releaser
+    pip install releaser
 
 
 Getting started
