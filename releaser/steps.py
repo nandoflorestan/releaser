@@ -67,43 +67,18 @@ class CheckRstFiles(ReleaseStep):
                 )
 
 
-class InteractivelyApproveDistribution(ReleaseStep):
-    """Generate a source distribution and let the user verify it."""
+class InteractivelyApprovePackage(ReleaseStep):
+    """Ask the user to manually verify source and wheel files."""
 
     ERROR_CODE = 5
 
     def __call__(self):  # noqa
-        self._execute_or_complain("python setup.py sdist")
         # TODO: Optionally xdg-open the archive for convenience
-        # Create the sdist with "-d <output_dir>"  on a temp dir.
-        # Delete it at the end.
-        print("The source distribution has been generated. Since it is just")
-        print("a zip file, you should now open it (in the 'dist' directory)")
-        print("and check that all files are in there.")
+        print("The new packages have been generated in the dist/ directory.")
+        print("Since they are really just zip files, you should now open them")
+        print("and check that no desired source files are missing.")
         if not bool_input("Do you approve the archive contents?"):
-            raise StopRelease(
-                "Source distribution content not approved.\n"
-                "If the distribution is missing some files,\n"
-                "try correcting your MANIFEST.in file."
-            )
-
-
-class InteractivelyApproveWheel(ReleaseStep):
-    """Generate wheel and let user verify it before proceeding."""
-
-    COMMAND = "python setup.py bdist_wheel"
-    ERROR_CODE = 10
-
-    def __call__(self):  # noqa
-        self._execute_or_complain(self.COMMAND)  # sets self.success
-        # TODO: Optionally xdg-open the wheel for convenience
-        print(
-            "The wheel has been generated. Since it is just a\n"
-            "zip file, you should now open it (from the 'dist' directory)"
-            "\nand check that all files are in there."
-        )
-        if not bool_input("Do you approve the wheel contents?"):
-            raise StopRelease("Wheel content not approved.")
+            raise StopRelease("Package content not approved.")
 
 
 class InteractivelyEnsureChangesDocumented(ReleaseStep):
