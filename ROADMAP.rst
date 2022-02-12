@@ -2,12 +2,7 @@
 ROADMAP
 =======
 
-================================  PypiUpload  ================================
-WARNING: Uploading via this command is deprecated, use twine to upload instead (https://pypi.org/p/twine/)
-=============================  PypiUploadWheel  ==============================
-WARNING: Uploading via this command is deprecated, use twine to upload instead (https://pypi.org/p/twine/)
-
-
+- Upgrade grimace
 - Materialize the Step interface and validate all steps against it
 - Use subcommands: "releaser go"
 - Try to improve appearance of the default commands list (e. g. blank lines)

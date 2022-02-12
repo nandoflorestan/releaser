@@ -55,9 +55,7 @@ class CheckRstFiles(ReleaseStep):
         self.paths = files
 
     def __call__(self):  # noqa
-        paths = self.paths or Path(".").walk(
-            filter=lambda p: p.suffix == ".rst"
-        )
+        paths = self.paths or Path(".").walk(filter=lambda p: p.suffix == ".rst")
         for path in paths:
             self.log.info(f"Checking {path}")
             warnings = check_rst_file(str(path))
@@ -124,10 +122,7 @@ class CheckTravis(ReleaseStep):
     """Check the status, on travis-ci.org, of the latest build."""
 
     ERROR_CODE = 91
-    URL = (
-        "https://api.travis-ci.org/repos/"
-        "{github_user}/{github_repository}/builds"
-    )
+    URL = "https://api.travis-ci.org/repos/{github_user}/{github_repository}/builds"
 
     def __call__(self):  # noqa
         branch = self.config.get("branch", "master")
@@ -136,15 +131,11 @@ class CheckTravis(ReleaseStep):
         onbranch = filter(lambda x: x["branch"] == branch, builds)
         finished = list(filter(lambda x: x["state"] == "finished", onbranch))
         if len(finished) == 0:
-            raise StopRelease(
-                'Travis has not built branch "{0}" yet.'.format(branch)
-            )
+            raise StopRelease('Travis has not built branch "{0}" yet.'.format(branch))
         latest = finished[0]
         if latest["result"] == 0:
             self.log.info(
-                'No problem in latest Travis build: "{0}"'.format(
-                    latest.get("message")
-                )
+                'No problem in latest Travis build: "{0}"'.format(latest.get("message"))
             )
             self._succeed()
         else:
@@ -162,9 +153,7 @@ class SetVersionNumberInteractively(ReleaseStep):
         releaser = self.releaser
         path = releaser.config["version_file"]
         keyword = releaser.config.get("version_keyword", "version")
-        releaser.old_version = version_in_python_source_file(
-            path, keyword=keyword
-        )
+        releaser.old_version = version_in_python_source_file(path, keyword=keyword)
         print("Current version: {0}".format(releaser.old_version))
         releaser.the_version = input("What is the new version number? ")
         # Write the new version onto the source code
@@ -218,9 +207,7 @@ class SetFutureVersion(ReleaseStep):
         # If the SetVersionNumberInteractively step is disabled for debugging,
         # we can still execute the current step, by populating the_version:
         if releaser.the_version is None:
-            releaser._the_version = version_in_python_source_file(
-                path, keyword=keyword
-            )
+            releaser._the_version = version_in_python_source_file(path, keyword=keyword)
         self.log.info(
             "Ready for the next development cycle! Setting version "
             + releaser.future_version
