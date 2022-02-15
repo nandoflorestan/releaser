@@ -12,13 +12,12 @@ from .regex import version_in_python_source_file
 __all__ = (
     "Shell",
     "CheckRstFiles",
-    "InteractivelyApproveDistribution",
-    "InteractivelyApproveWheel",
-    "PypiUploadWheel",
-    "InteractivelyEnsureChangesDocumented",
+    "InteractivelyApprovePackage",
     "CheckTravis",
+    "InteractivelyEnsureChangesDocumented",
     "SetVersionNumberInteractively",
-    "PypiUpload",
+    "TwineUploadSource",
+    "TwineUploadWheel",
     "SetFutureVersion",
     "ErrorStep",
     "Warn",
@@ -138,7 +137,7 @@ class SetVersionNumberInteractively(ReleaseStep):
         self._succeed()
 
 
-class PypiUpload(CommandStep):
+class TwineUploadSource(CommandStep):
     """Use *twine* to upload a source distribution to pypi."""
 
     ERROR_CODE = 8
@@ -153,7 +152,7 @@ class PypiUpload(CommandStep):
         return "Server response (200): OK" in command_output
 
 
-class PypiUploadWheel(CommandStep):
+class TwineUploadWheel(CommandStep):
     """Use *twine* to upload a wheel to pypi."""
 
     ERROR_CODE = 11

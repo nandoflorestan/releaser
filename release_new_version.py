@@ -40,8 +40,9 @@ Releaser(
     InteractivelyApprovePackage,  # Ask user to manually verify wheel content
     GitCommitVersionNumber,
     GitTag,  # Locally tag the current commit with the new version number
-    PypiUpload,  # Make and upload a source .tar.gz to https://pypi.org
-    PypiUploadWheel,  # Make and upload source wheel to https://pypi.org
+    Shell("poetry publish"),  # Upload source and wheel to https://pypi.org
+    # TwineUploadSource,  # Upload a source .tar.gz to https://pypi.org with Twine
+    # TwineUploadWheel,  # Upload wheel to https://pypi.org with Twine
     # ===========  Post-release: set development version and push  ============
     SetFutureVersion,  # Writes incremented version, now with 'dev1' suffix
     GitCommitVersionNumber("future_version", msg="Bump version to {0} after release"),
