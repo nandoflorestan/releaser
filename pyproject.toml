@@ -1,0 +1,43 @@
+[tool.poetry]
+	name = "releaser"
+	version = "3.0.0.dev1"
+	description = "Automates the process of releasing a new version of some software."
+	authors = ["Nando Florestan <nandoflorestan@gmail.com>"]
+	license = "MIT"
+	repository = "https://github.com/nandoflorestan/releaser"
+	classifiers = [
+		# https://pypi.org/pypi?:action=list_classifiers
+		"Development Status :: 5 - Production/Stable",
+		"Environment :: Console",
+		"Intended Audience :: Developers",
+		"License :: OSI Approved :: MIT License",
+		"Operating System :: OS Independent",
+		"Programming Language :: Python",
+		"Programming Language :: Python :: 3",
+		"Programming Language :: Python :: 3.8",
+		"Programming Language :: Python :: 3.9",
+		"Programming Language :: Python :: 3.10",
+		"Programming Language :: Python :: Implementation :: CPython",
+		"Topic :: Software Development :: Libraries :: Python Modules",
+	]
+	# A list of keywords (max: 5) that the package is related to
+	keywords = [
+		"release",
+		"releaser",
+		"setup",
+		"distribute",
+		"project",
+	]
+
+[tool.poetry.dependencies]
+	python = "^3.8"
+	# https://python-poetry.org/docs/dependency-specification/
+    bag = "5.*"
+    docutils = "< 0.18"
+    grimace = "0.1.*"
+    requests = "*"
+    wheel = "*"
+
+[build-system]
+	requires = ["poetry-core>=1.0.0"]
+	build-backend = "poetry.core.masonry.api"

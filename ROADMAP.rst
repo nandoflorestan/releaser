@@ -2,8 +2,7 @@
 ROADMAP
 =======
 
-- Support usage of poetry
-- Upgrade grimace
+- Project name and other settings could come from pyproject.toml
 - Materialize the Step interface and validate all steps against it
 - Infer ``github_user`` setting from .git/config
 - Also autodiscover ``github_repository``
