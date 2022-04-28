@@ -1,6 +1,6 @@
 [tool.poetry]
 	name = "releaser"
-	version = "3.0.0.a1"
+	version = "3.0.0"
 	description = "Automates the process of releasing a new version of some software."
 	authors = ["Nando Florestan <nandoflorestan@gmail.com>"]
 	license = "MIT"
