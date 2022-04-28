@@ -80,6 +80,9 @@ Links
 Our project home and issue tracker are at GitHub_.
 It's easy to `read the source code`_.
 
+You can read the
+`change log here <https://github.com/nandoflorestan/releaser/blob/master/CHANGES.rst>`_.
+
 A popular alternative to *releaser* is the project `zest.releaser`_. It differs
 in features, manners of extensibility and support for Python versions.
 
